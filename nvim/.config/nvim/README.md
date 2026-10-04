@@ -13,6 +13,7 @@ set of focused plugins.
 - **Completion**: mini.completion + native cmdline autocompletion
 - **Git**: fugitive (status/blame) + mini.diff (hunk signs) + diffs.nvim
 - **Pickers**: fzf-lua (including `vim.ui.select`; `<leader>fz` opens its picker menu)
+- **Sessions**: servery.nvim lists running sessions and folders under `~/personal`, `~/work`, `~/Work`, and `~/git`
 
 ## Plugins
 
@@ -23,6 +24,7 @@ set of focused plugins.
 | `nvim-mini/mini.nvim` | icons, ai, surround, completion, diff, jump, jump2d, statusline, files |
 | `tpope/vim-fugitive` | Git client (`:Git`, blame, etc.) |
 | `ibhagwan/fzf-lua` | Default picker (ivy layout and `vim.ui.select`) |
+| `wurli/servery.nvim` | Switch between persistent Neovim project sessions |
 | `brianhuster/live-preview.nvim` | Live browser preview for Markdown, including Mermaid diagrams and KaTeX math |
 | `barrettruth/diffs.nvim` | Diff views (Fugitive integration) |
 | `nvim-treesitter/nvim-treesitter` (`main`) | Highlighting + indent |
@@ -102,6 +104,9 @@ short explicit load order.
 | `<leader>ng` | nb: open the wiki link under the cursor |
 | `<leader>e` / `<leader>E` | mini.files: current path / project root |
 | `<leader>gg` | fugitive `:Git` status |
+| `<leader>gf` | fzf-lua: changed files from Git status |
+| `<leader>gr` | diffs.nvim: review repository changes against `HEAD` |
+| `<leader>pp` | servery.nvim: switch Neovim session |
 | `<leader>ac` | Insert a file/line review comment into the nearest Herdr agent's input (normal or visual mode) |
 | `[h` / `]h` | mini.diff: prev / next hunk |
 | `[H` / `]H` | mini.diff: first / last hunk |
@@ -131,6 +136,23 @@ Stock Neovim LSP/diagnostic defaults still apply: `grn`, `grr`, `gri`, `gra`,
 `gO`, `K`, `[d` `]d`, `[q` `]q`. `mini.jump` extends `f`/`F`/`t`/`T` across
 lines; `mini.ai` adds textobjects; `mini.completion` handles insert completion
 and signature help.
+
+## Project sessions and Git review
+
+`<leader>pp` lists running Neovim sessions and immediate, non-hidden project
+folders under `~/personal`, `~/work`, `~/Work`, and `~/git`. Missing roots are
+ignored. A folder with an active session may appear twice. `<Enter>` switches
+without closing the previous session. In the picker, `<C-x>` closes the selected
+session; servery refuses to close one with unsaved file changes.
+With the pinned servery release, direct `:Sv /path` currently stops the old
+session; use `<leader>pp` to keep it open.
+
+After switching, `<leader>ff` searches files and `<leader>E` opens the file
+explorer in the current project. `<leader>gf` picks changed files from Git
+status. `<leader>gr` opens a full repository review against `HEAD`, including
+staged, unstaged, and untracked changes, without needing a remote default
+branch. The review's `gs` toggles the selected file between the full diff and
+a side-by-side view; `:cnext` / `:cprev` move between changed files.
 
 `<leader>ac` requires Neovim to run inside Herdr with the `herdr` CLI available.
 It targets an agent in the same tab first, or another tab in the same workspace;
