@@ -35,7 +35,7 @@ trigger a workspace-root prompt or a new LSP session."
                (string-match-p "MetadataAsSource" buffer-file-name))
     (lsp-deferred)))
 
-(add-hook 'csharp-ts-mode-hook #'lsp-deferred)
+(add-hook 'csharp-ts-mode-hook #'lsp-csharp--maybe-start-lsp)
 (add-hook 'csharp-ts-mode-hook #'flymake-mode)
 
 (setq lsp-roslyn-server-log-level "Warning")
@@ -65,6 +65,12 @@ Assumes the tool was installed with:
         "--clientProcessId" (number-to-string (emacs-pid))
         "--autoLoadProjects"))
 
+(defun lsp-csharp--show-toast (_workspace params)
+  "Show Roslyn project-loading errors and other PARAMS messages."
+  (lsp--window-show-message nil
+                            (list :message (plist-get params :message)
+                                  :type (plist-get params :messageType))))
+
 (lsp-register-client
  (make-lsp-client :new-connection (lsp-stdio-connection #'lsp-csharp--roslyn-stdio-command)
                   :priority 1
@@ -73,7 +79,9 @@ Assumes the tool was installed with:
                   :path->uri-fn #'lsp-roslyn--path-to-uri
                   :uri->path-fn #'lsp-roslyn--uri-to-path
                   :notification-handlers (ht ("workspace/projectInitializationComplete"
-                                              'lsp-roslyn--on-project-initialization-complete))))
+                                              'lsp-roslyn--on-project-initialization-complete)
+                                             ("window/_roslyn_showToast"
+                                              #'lsp-csharp--show-toast))))
 
 (provide 'lsp-csharp)
 ;;; lsp-csharp.el ends here

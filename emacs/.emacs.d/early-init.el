@@ -7,13 +7,16 @@
 (tool-bar-mode -1)
 (tooltip-mode -1)
 
-;;; Set paths for both emacs and external emacs processes
-(add-to-list 'exec-path "~/.dotnet/tools/")
-(setenv "PATH" (concat "~/.dotnet/tools/:" (getenv "PATH")))
-(add-to-list 'exec-path "~/.local/bin/")
-(setenv "PATH" (concat "~/.local/bin/:" (getenv "PATH")))
-(add-to-list 'exec-path "~/.opencode/bin/")
-(setenv "PATH" (concat "~/.opencode/bin/:" (getenv "PATH")))
+;;; Set paths for both Emacs and its child processes.  GUI Emacs does not
+;;; source .bashrc, where the user-installed .NET SDK is normally selected.
+(let ((dotnet-root (expand-file-name "~/.dotnet")))
+  (when (file-executable-p (expand-file-name "dotnet" dotnet-root))
+    (setenv "DOTNET_ROOT" dotnet-root)))
+(dolist (directory '("~/.dotnet" "~/.dotnet/tools" "~/.local/bin" "~/.opencode/bin"))
+  (let ((expanded (expand-file-name directory)))
+    (when (file-directory-p expanded)
+      (add-to-list 'exec-path expanded)
+      (setenv "PATH" (concat expanded path-separator (getenv "PATH"))))))
 
 (let ((script (expand-file-name "~/.local/bin/init-emacs-env.sh")))
   (when (file-executable-p script)

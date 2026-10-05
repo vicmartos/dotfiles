@@ -21,3 +21,10 @@ fi
 
 alias lg=lazygit
 alias hw=herdr-workspacer
+# Emacs
+alias e='emacsclient -t'
+alias ec='nohup emacsclient -c -n < /dev/null > /dev/null 2>&1 &'
+alias emacsd='systemctl --user status emacs'
+alias emacsd-restart='systemctl --user restart emacs'
+alias emacsd-stop='systemctl --user stop emacs'
+alias emacs-install='emacs -nw'
