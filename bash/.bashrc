@@ -14,6 +14,22 @@ alias cd=z
 alias v=nvim
 
 # Emacs
+# emacsclient does not pass COLORTERM to the daemon, so an xterm-256color
+# client frame loses true color even though standalone Emacs supports it.
+emacsclient() {
+  local arg
+  if [[ ${TERM-} == xterm-256color && ${COLORTERM-} == truecolor ]] &&
+     infocmp xterm-direct &>/dev/null; then
+    for arg in "$@"; do
+      if [[ $arg == -t || $arg == --tty ]]; then
+        TERM=xterm-direct command emacsclient "$@"
+        return
+      fi
+    done
+  fi
+  command emacsclient "$@"
+}
+
 alias e='emacsclient -t'
 alias ec='nohup emacsclient -c -n < /dev/null > /dev/null 2>&1 &'
 alias emacsd='systemctl --user status emacs'
