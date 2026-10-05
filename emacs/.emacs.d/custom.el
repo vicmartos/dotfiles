@@ -33,7 +33,8 @@
  '(package-selected-packages
    '(avy cape consult consult-denote corfu corfu-terminal denote
          denote-journal denote-markdown diff-hl dired-subtree
-         doric-themes ef-themes embark embark-consult expand-region
+         doric-themes ef-themes embark embark-consult evil
+         evil-collection expand-region
          fontaine ghostel git-link gruber-darker-theme kanagawa-themes
          lsp-mode magit marginalia move-text multiple-cursors
          nerd-icons nerd-icons-completion nerd-icons-corfu

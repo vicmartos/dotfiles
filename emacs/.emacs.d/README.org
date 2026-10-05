@@ -8,8 +8,8 @@ This is my personal Emacs configuration, designed to run as a daemon via
 
 - Daemon-first: Emacs runs in the background, frames are opened with
   ~emacsclient~.
-- Modal-free editing: heavy use of ~avy~, ~consult~, and custom key bindings
-  instead of modal editing.
+- Vim-style editing with Evil in both terminal and GUI frames, alongside
+  ~avy~, ~consult~, and the existing Emacs key bindings.
 - Minimal GUI chrome: no menu bar, tool bar, scroll bars, or tooltips.
 - Package management through ~use-package~ and MELPA.
 
@@ -36,9 +36,10 @@ As a detached GUI frame:
 
 * Installing or updating packages
 
-Because the daemon has no package archives and ~use-package-always-ensure~ is
-disabled in daemon mode, new packages must be installed by running Emacs
-directly:
+The daemon has no package archives and disables the default ~use-package~
+installation setting.  Install new packages by running Emacs directly before
+restarting the daemon.  Declarations with an explicit ~:ensure t~ can still
+attempt installation in daemon mode if their package is missing.
 
 #+begin_src sh
   emacs -nw
@@ -87,6 +88,13 @@ mind:
 - *diff-hl*: margin indicators are used in both GUI and TTY (the
   daemon starts headless, so frame-type checks at startup are
   meaningless).
+- *Evil*: normal, insert, and visual states work in both frame types.
+  Existing ~C-x~ and ~C-c~ bindings are kept, and ~C-h~ remains Help;
+  no ~SPC~ leader is set.
+  Evil Collection is enabled for Dired, Help, Info, Consult, Corfu, Embark,
+  Org, Org Agenda, Markdown, and Magit.  The minibuffer, Ghostel, and Eshell
+  retain Emacs-style input.  Herdr consumes ~C-SPC~ as its prefix, so use
+  Evil visual state (~v~) for ordinary selections in a Herdr terminal.
 - *Keybindings terminals cannot send* (~C-.~, ~C-;~, ~C-=~):
   | Action             | GUI    | TTY-safe |
   |--------------------+--------+----------|
@@ -122,6 +130,8 @@ mind:
 - ~nerd-icons~ family :: icons for dired, completion, and buffers
 
 ** Navigation and editing
+- ~evil~ :: Vim-style editing in normal, insert, and visual states
+- ~evil-collection~ :: Vim-style bindings in selected Emacs interfaces
 - ~avy~ :: jump to visible text
 - ~expand-region~ :: incrementally expand selections
 - ~multiple-cursors~ :: edit multiple locations at once

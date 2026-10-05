@@ -19,6 +19,32 @@
 ;; To install or update packages, run Emacs directly (not as daemon).
 (setq use-package-always-ensure (not (daemonp)))
 
+;;; Vim editing
+
+;; These packages are installed before starting the daemon.  Omit :ensure t
+;; so the daemon does not try to install them when archives are disabled.
+(use-package evil
+  :init
+  (setq evil-want-integration t
+        evil-want-keybinding nil
+        evil-want-minibuffer nil)
+  :config
+  (evil-mode 1)
+  ;; Shell input should keep its existing Emacs bindings.
+  (evil-set-initial-state 'ghostel-mode 'emacs)
+  (evil-set-initial-state 'eshell-mode 'emacs))
+
+(use-package evil-collection
+  :after evil
+  :init
+  (setq evil-collection-want-unimpaired-p nil
+        evil-collection-mode-list
+        '(dired help info consult corfu embark
+          org org-agenda markdown-mode
+          (magit magit-submodule)))
+  :config
+  (evil-collection-init))
+
 (add-to-list 'display-buffer-alist
              '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
                (display-buffer-no-window)
