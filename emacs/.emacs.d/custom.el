@@ -36,7 +36,7 @@
          doric-themes ef-themes embark embark-consult evil
          evil-collection expand-region
          fontaine ghostel git-link gruber-darker-theme kanagawa-themes
-         lsp-mode magit marginalia move-text multiple-cursors
+         magit marginalia move-text multiple-cursors
          nerd-icons nerd-icons-completion nerd-icons-corfu
          nerd-icons-dired orderless perspective sharper trashed
          treesit-auto vertico yasnippet yasnippet-snippets)))

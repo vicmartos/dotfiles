@@ -721,43 +721,37 @@ The DWIM behaviour of this command is as follows:
 
 ;;; Language Servers
 
-(use-package lsp-mode
-  :ensure t
-  :commands (lsp lsp-deferred)
+(use-package eglot
+  :ensure nil
+  :demand t
   :init
-  (setq lsp-keymap-prefix "C-c l")
+  (setq eglot-autoshutdown t
+        eglot-extend-to-xref nil
+        eglot-send-changes-idle-time 0.5
+        eglot-code-action-indications nil
+        eglot-ignored-server-capabilities
+        '(:documentHighlightProvider :documentOnTypeFormattingProvider
+          :codeLensProvider :signatureHelpProvider))
   :config
-  (setq lsp-log-io nil)
-  (setq lsp-idle-delay 0.5)
-  ;; We use Corfu, don't let lsp-mode configure company
-  (setq lsp-completion-provider :none)
-  (setq lsp-enable-symbol-highlighting nil)
-  (setq lsp-enable-on-type-formatting nil)
-  (setq lsp-enable-code-lens nil)
-  (setq lsp-enable-snippet t)
-  (setq lsp-signature-auto-activate nil)
-  (setq lsp-modeline-code-actions-enable nil)
-  (setq lsp-modeline-diagnostics-enable nil)
-  (setq lsp-headerline-breadcrumb-enable nil)
-  (setq lsp-diagnostics-provider :flymake)
-  (setq lsp-keep-workspace-alive nil)
-  (setq lsp-enable-file-watchers nil)
-  (setq lsp-response-timeout 10)
-  (setq lsp-use-plists t)
-  (setq lsp-restart 'auto-restart)
-  (setq lsp-clients-clangd-args
-        '("--clang-tidy"
-          "--header-insertion=never"
-          "--completion-style=detailed"))
-  ;; Filter LSP candidates with Orderless (per Corfu wiki)
-  (defun my/lsp-mode-setup-completion ()
-    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless)))
-  (add-hook 'lsp-completion-mode-hook #'my/lsp-mode-setup-completion)
-  (lsp-enable-which-key-integration))
+  ;; Corfu uses Eglot's standard completion-at-point backend.
+  (setf (alist-get 'styles (alist-get 'eglot completion-category-overrides))
+        '(orderless))
+  (defvar my/eglot-command-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map (kbd "r r") #'eglot-rename)
+      (define-key map (kbd "a a") #'eglot-code-actions)
+      (define-key map (kbd "= =") #'eglot-format-buffer)
+      (define-key map (kbd "= r") #'eglot-format)
+      (define-key map (kbd "w r") #'eglot-reconnect)
+      (define-key map (kbd "w q") #'eglot-shutdown)
+      (define-key map (kbd "w d") #'eglot-describe-connection)
+      (define-key map (kbd "w s") #'eglot)
+      map)
+    "Language-server commands under the existing C-c l prefix.")
+  (define-key eglot-mode-map (kbd "C-c l") my/eglot-command-map))
 
-(require 'lsp-csharp)
-(require 'lsp-c)
+(require 'my-eglot-csharp)
+(require 'my-eglot-c)
 (require 'my-perspectives)
 (global-set-key (kbd "C-c o") my/persp-map)
 

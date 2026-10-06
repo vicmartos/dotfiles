@@ -150,7 +150,7 @@ mind:
 - ~org-mode~ :: built-in organization and agenda
 
 ** Development
-- ~lsp-mode~ :: Language Server Protocol support
+- ~eglot~ :: built-in Language Server Protocol support (Emacs 31.1+)
 - ~treesit-auto~ :: automatic tree-sitter mode remapping
 
 ** Terminal and shell
@@ -160,3 +160,163 @@ mind:
 ** File management
 - ~dired-subtree~ :: subtree navigation in Dired
 - ~trashed~ :: trash can management
+
+* Language servers: Eglot
+
+Use Emacs 31.1 or newer.  Its bundled Eglot supports pull diagnostics;
+there is no separate Eglot package to install.  Older Emacs installations
+need an updated Eglot with pull-diagnostic support (introduced in 1.20).
+The tested combination is Emacs 31.1 / Eglot 1.24.31 and Microsoft
+~roslyn-language-server~ 5.12.0-1.26475.2.
+
+** C# / Microsoft Roslyn
+
+Install the .NET 10 runtime or SDK and the server before starting the daemon:
+
+#+begin_src sh
+  dotnet tool install --global roslyn-language-server --prerelease
+  dotnet tool list --global
+#+end_src
+
+~early-init.el~ makes the user-installed .NET SDK and global tools available
+to GUI and daemon sessions.  Both ~csharp-mode~ and ~csharp-ts-mode~ start
+Eglot automatically.  The server uses stdio and discovers projects under
+the project root through ~--autoLoadProjects~.  The adapter also explicitly
+opens the sole ~.sln~ or ~.slnx~ listed by ~project.el~, or opens its ~.csproj~
+files when there is no unique solution.  This avoids intermittent
+standalone-file fallback on fresh connections.  Project discovery respects
+~project.el~ ignore rules.  Existing root markers continue to apply;
+ensure the chosen root contains the intended
+~.sln~, ~.slnx~, or ~.csproj~.
+
+Flymake receives native ~textDocument/diagnostic~ responses.  Roslyn's
+static diagnostic capability is used; dynamic registration stays disabled.
+The local Roslyn adapter acknowledges ~workspace/diagnostic/refresh~
+requests and asynchronously rechecks that connection's open managed
+buffers.  It also rechecks after project initialization and displays
+Roslyn loading errors in ~*Messages*~.  This does not provide a diagnostic
+list for every unopened file in a solution.
+
+Use ~M-.~ on framework or NuGet symbols to open Roslyn's external-source
+files.  Files under ~MetadataAsSource~ open read-only and do not start a
+new server or ask for a project root.  Use ~M-,~ to return.  Navigation
+onward from those metadata buffers is not enabled.  Whether source is
+decompiled or obtained through source information depends on the assembly
+and Roslyn.
+
+** C / clangd
+
+Install ~clangd~ and provide ~compile_commands.json~ (or a ~.clangd~ file
+with compile flags).  Both ~c-mode~ and ~c-ts-mode~ start Eglot
+automatically.  clangd keeps ~--clang-tidy~, ~--header-insertion=never~, and
+~--completion-style=detailed~.  Meson compilation-database examples remain
+in ~lisp/my-eglot-c.el~.
+
+** Commands and behavior
+
+| Key       | Command                      |
+|-----------+------------------------------|
+| ~M-.~     | Find definition              |
+| ~M-?~     | Find references              |
+| ~M-,~     | Return from navigation       |
+| ~C-c l r r~ | Rename symbol              |
+| ~C-c l a a~ | Code actions               |
+| ~C-c l = =~ | Format buffer              |
+| ~C-c l = r~ | Format active region       |
+| ~C-c l w r~ | Reconnect server           |
+| ~C-c l w q~ | Shut down server           |
+| ~C-c l w d~ | Describe connection        |
+| ~C-c l w s~ | Start/connect manually     |
+
+These prefix bindings apply to Eglot-managed buffers.  ~M-x eglot~ remains
+available in other buffers.  Corfu uses Eglot's completion-at-point
+backend, Orderless filters its candidates, and Yasnippet supports snippet
+completions.  Hover information uses ElDoc; ~M-x eldoc-doc-buffer~ opens the
+documentation buffer.
+
+Formatting is explicit.  Automatic symbol highlighting, on-type
+formatting, code lenses, signature help, and code-action indicators are
+disabled.  Changes are sent after 0.5 seconds of idle time.  Eglot shuts
+down a connection after its last managed buffer closes, uses its default
+automatic reconnection policy, and honors bounded server-requested file
+watches (unlike the previous configuration, which disabled watching).
+
+Inspect ~M-x eglot-list-connections~, ~M-x eglot-describe-connection~,
+~M-x eglot-events-buffer~, and ~M-x flymake-show-buffer-diagnostics~ when
+troubleshooting.  If diagnostics are missing, check project-loading
+messages, project root, .NET availability, and the connection's
+~diagnosticProvider~ capability.  ~M-x flymake-start~ requests a fresh check.
+
+** Tests
+
+Run the Roslyn adapter tests from the repository root:
+
+#+begin_src sh
+  emacs -Q --batch \
+    -L emacs/.emacs.d/lisp \
+    -l emacs/.emacs.d/test/my-eglot-csharp-test.el \
+    -f ert-run-tests-batch-and-exit
+#+end_src
+
+The tests cover deferred and coalesced diagnostic refresh, connection
+isolation, stopped servers, capability advertising, loading messages, and
+read-only metadata buffers, and explicit solution/project loading.
+They do not need a running language server.
+
+** Migration validation (2026-10-06)
+
+- Nine adapter tests passed; both language modules byte-compiled without
+  warnings.
+- Fresh Roslyn connections were tested with a ~.csproj~-only project and a
+  ~.slnx~ solution, under a path containing spaces and ~#~.
+- Initial, unsaved, and cross-file diagnostics, refresh requests,
+  completion, hover, references, rename, code-action edits, and formatting
+  passed against the installed server.
+- Framework and NuGet definitions opened actual decompiled files,
+  read-only, without additional servers.  Xref return restored the cursor.
+- clangd diagnostics, completion, and definition navigation passed with a
+  compilation database.
+- Corfu popups rendered in GUI and terminal clients; terminal snippet
+  expansion and automatic shutdown after the last managed buffer passed.
+
+These checks used temporary fixture projects and a separately named daemon
+with the complete worktree configuration.  Validate a normal working
+solution before activating the migration.  Roslyn may warn about its
+unsupported Razor ~textDocument/documentColor~ registration; this does
+not affect the tested C# features.
+
+** Worktree review and activation
+
+The migration is developed on ~codex/eglot-migration~ in
+~/home/vicmaeg/personal/dotfiles-eglot-migration~.  The original checkout's
+uncommitted clipboard changes are separate from this branch.
+
+For an isolated interactive preview, create a temporary configuration.
+This reuses installed packages and grammars and keeps writable state in
+the temporary directory:
+
+#+begin_src sh
+  task_emacs_preview=$(mktemp -d /tmp/eglot-preview.XXXXXX)
+  task_emacs_source=/home/vicmaeg/personal/dotfiles-eglot-migration/emacs/.emacs.d
+  ln -s "$task_emacs_source/init.el" "$task_emacs_preview/init.el"
+  ln -s "$task_emacs_source/lisp" "$task_emacs_preview/lisp"
+  cp "$task_emacs_source/custom.el" "$task_emacs_preview/custom.el"
+  cat > "$task_emacs_preview/early-init.el" <<'ELISP'
+  (setq package-user-dir "/home/vicmaeg/personal/dotfiles/emacs/.emacs.d/elpa"
+        treesit-extra-load-path
+        '("/home/vicmaeg/personal/dotfiles/emacs/.emacs.d/tree-sitter"))
+  (load "/home/vicmaeg/personal/dotfiles-eglot-migration/emacs/.emacs.d/early-init.el")
+  ELISP
+  emacs --init-directory="$task_emacs_preview" --daemon=eglot-preview
+  emacsclient -s eglot-preview -c
+  # Or: emacsclient -s eglot-preview -t
+  # After closing preview frames:
+  emacsclient -s eglot-preview -e '(kill-emacs)'
+#+end_src
+
+After review and successful real-project validation, integrate the branch
+into ~main~ while preserving the clipboard edits, then save active buffers
+and restart the normal daemon.  Keep the installed ~lsp-mode~ package
+until the migration is accepted; it is no longer loaded by this config.
+To roll back, restore the pre-migration configuration or revert the
+migration commit and restart the daemon.  No package deletion is needed.
