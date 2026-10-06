@@ -39,7 +39,7 @@
          lsp-mode magit marginalia move-text multiple-cursors
          nerd-icons nerd-icons-completion nerd-icons-corfu
          nerd-icons-dired orderless perspective sharper trashed
-         treesit-auto vertico yasnippet yasnippet-snippets)))
+         treesit-auto vertico xclip yasnippet yasnippet-snippets)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

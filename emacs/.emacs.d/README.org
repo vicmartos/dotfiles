@@ -85,6 +85,10 @@ mind:
   colors fall back to the 256-color palette.
 - *Corfu popup*: provided by ~corfu-terminal~ (popon overlays) in TTY
   frames; GUI frames keep native child frames.
+- *System clipboard*: ~xclip-mode~ integrates terminal copy and paste with
+  the desktop clipboard.  On Wayland it uses ~wl-copy~ and ~wl-paste~ from
+  ~wl-clipboard~; on WSL it uses Windows' ~clip.exe~ and ~powershell.exe~.
+  This also applies to Evil's yank and paste commands.
 - *diff-hl*: margin indicators are used in both GUI and TTY (the
   daemon starts headless, so frame-type checks at startup are
   meaningless).

@@ -431,6 +431,20 @@ The DWIM behaviour of this command is as follows:
 
 ;;; Kill ring and clipboard improvements
 
+;; Enable terminal copy/paste through the system clipboard (wl-clipboard on
+;; Wayland; clip.exe and PowerShell on WSL).  Enable globally so daemon clients
+;; work in both TTY and GUI frames.
+(use-package xclip
+  :config
+  ;; xclip 1.11 detects PowerShell on WSL but sets the program name to
+  ;; "powershell".  Use the executable name available through WSL interop.
+  (when (and (eq system-type 'gnu/linux)
+             (executable-find "powershell.exe")
+             (executable-find "clip.exe"))
+    (setq xclip-method 'powershell
+          xclip-program "powershell.exe"))
+  (xclip-mode 1))
+
 ;; Save clipboard content into the kill ring before overwriting it, so
 ;; C-y/M-y can recover text copied from external programs
 (setq save-interprogram-paste-before-kill t)
