@@ -707,7 +707,10 @@ The DWIM behaviour of this command is as follows:
 
 (use-package magit
   :ensure t
-  :commands (magit-status))
+  :commands (magit-status)
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+  :hook (magit-mode . visual-line-mode))
 
 (use-package git-link
   :ensure t
