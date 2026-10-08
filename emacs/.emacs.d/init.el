@@ -722,6 +722,8 @@ The DWIM behaviour of this command is as follows:
 
 ;;; version control
 
+(require 'my-copy-location)
+
 (use-package magit
   :ensure t
   :commands (magit-status))

@@ -88,7 +88,10 @@ mind:
 - *System clipboard*: ~xclip-mode~ integrates terminal copy and paste with
   the desktop clipboard.  On Wayland it uses ~wl-copy~ and ~wl-paste~ from
   ~wl-clipboard~; on WSL it uses Windows' ~clip.exe~ and ~powershell.exe~.
-  This also applies to Evil's yank and paste commands.
+  This also applies to Evil's yank and paste commands.  Use ~C-c y~ to copy
+  the current file location or the active Emacs region's line range.  In
+  Magit status, it copies a file path or a reference to selected lines
+  within one diff hunk (removed lines include their text).
 - *diff-hl*: margin indicators are used in both GUI and TTY (the
   daemon starts headless, so frame-type checks at startup are
   meaningless).
