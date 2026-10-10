@@ -130,16 +130,8 @@ The DWIM behaviour of this command is as follows:
 
 ;;; Tweak the looks of Emacs
 
-(use-package modus-themes
-  :ensure t)
-
-(use-package ef-themes
-  :ensure t)
-
-(use-package kanagawa-themes
-  :ensure t)
-
 (require 'my-omarchy-theme)
+;; Use the bundled dark theme when Omarchy theme sync is unavailable.
 (unless (my/omarchy-theme-sync-enable)
   (load-theme 'modus-vivendi :no-confirm-loading))
 
@@ -245,22 +237,6 @@ The DWIM behaviour of this command is as follows:
 (fontaine-mode 1)
 (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
 
-;; Remember to do M-x and run `nerd-icons-install-fonts' to get the
-;; font files.  Then restart Emacs to see the effect.
-(use-package nerd-icons
-  :ensure t)
-
-(use-package nerd-icons-completion
-  :ensure t
-  :after marginalia
-  :config
-  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
-
-(use-package nerd-icons-dired
-  :ensure t
-  :hook
-  (dired-mode . nerd-icons-dired-mode))
-
 ;;; Configure the minibuffer and completions
 
 (use-package vertico
@@ -360,12 +336,6 @@ The DWIM behaviour of this command is as follows:
   (setq corfu-quit-no-match t)
   ;; Emacs 30: disable Ispell word completion in text modes (per Corfu README)
   (setq text-mode-ispell-word-completion nil))
-
-(use-package nerd-icons-corfu
-  :ensure t
-  :after corfu
-  :config
-  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package cape
   :ensure t
