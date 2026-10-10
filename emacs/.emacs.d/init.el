@@ -367,19 +367,6 @@ The DWIM behaviour of this command is as follows:
   :config
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
-;; Corfu's popup needs child frames, which TTY frames on Emacs 30 lack
-;; (native support lands in Emacs 31 as `tty-child-frames').
-;; corfu-terminal renders the popup with popon overlays in TTY frames;
-;; with the default `corfu-terminal-disable-on-gui' (t) GUI frames keep
-;; using native child frames, so it is safe to enable globally in the
-;; daemon.
-(use-package corfu-terminal
-  :ensure t
-  :if (not (featurep 'tty-child-frames))
-  :after corfu
-  :config
-  (corfu-terminal-mode +1))
-
 (use-package cape
   :ensure t
   :init
