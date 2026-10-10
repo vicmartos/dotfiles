@@ -578,45 +578,6 @@ The DWIM behaviour of this command is as follows:
    ("M-g f" . avy-goto-line)
    ("M-g w" . avy-goto-word-1)))
 
-;;; Selection expansion
-
-(use-package expand-region
-  :ensure t
-  :bind
-  (;; C-= is unsendable in terminals; C-c = works everywhere
-   ("C-=" . er/expand-region)
-   ("C-c =" . er/expand-region)
-   ;; Contract is on C-c - only: binding C-- shadows undo, because
-   ;; ?\C-- and ?\C-_ are the same character (and in terminals C-/,
-   ;; C-_ and C-- all arrive as the same byte)
-   ("C-c -" . er/contract-region)))
-
-;;; Multiple cursors
-
-(use-package multiple-cursors
-  :ensure t
-  :bind
-  (;; GUI bindings (rexim/official style) — do not work in terminals
-   ("C-S-c C-S-c" . mc/edit-lines)
-   ("C->"         . mc/mark-next-like-this)
-   ("C-<"         . mc/mark-previous-like-this)
-   ("C-c C-<"     . mc/mark-all-like-this)
-   ("C-<tab>"     . mc/skip-to-next-like-this)
-   ("C-|"         . mc/skip-to-previous-like-this)
-   ("C-&"         . mc/unmark-next-like-this)
-   ("C-%"         . mc/unmark-previous-like-this)
-   ;; Terminal-safe fallback (C->, C-<, C-", C-: are unreachable in -t)
-   ("C-c m l"     . mc/edit-lines)
-   ("C-c m n"     . mc/mark-next-like-this)
-   ("C-c m p"     . mc/mark-previous-like-this)
-   ("C-c m a"     . mc/mark-all-like-this)
-   ("C-c m N"     . mc/unmark-next-like-this)
-   ("C-c m P"     . mc/unmark-previous-like-this)
-   ("C-c m s"     . mc/skip-to-next-like-this)
-   ("C-c m S"     . mc/skip-to-previous-like-this))
-  :config
-  (setq mc/always-run-for-all t))
-
 ;;; Move text
 
 (use-package move-text

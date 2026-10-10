@@ -33,9 +33,9 @@
  '(package-selected-packages
    '(avy cape consult consult-denote corfu denote
          denote-journal denote-markdown diff-hl dired-subtree
-         doric-themes ef-themes embark embark-consult expand-region
+         doric-themes ef-themes embark embark-consult
          fontaine ghostel git-link gruber-darker-theme kanagawa-themes
-         magit marginalia meow move-text multiple-cursors
+         magit marginalia meow move-text
          nerd-icons nerd-icons-completion nerd-icons-corfu
          nerd-icons-dired orderless perspective sharper trashed
          treesit-auto vertico xclip yasnippet yasnippet-snippets)))

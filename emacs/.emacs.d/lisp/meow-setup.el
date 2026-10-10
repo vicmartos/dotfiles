@@ -6,9 +6,9 @@
 ;; (hjkl move, w/s/x mark/kill/yank...), INSERT state is vanilla Emacs.
 ;; All existing C-x/C-c/M- bindings keep working in every state; KEYPAD
 ;; gives modifier-free access to them (SPC x f = C-x C-f, SPC c = C-c).
-;; Multiple cursors: select lines, then G (meow-grab) and enter INSERT —
-;; edits replay on every cursor (replaces multiple-cursors);
-;; 1..9 expand the selection by "thing" (replaces expand-region).
+;; Repeated edits: select lines, then G (meow-grab) and enter INSERT —
+;; edits replay at each Beacon location;
+;; 1..9 expand the selection by "thing".
 ;; SPC ? shows the cheatsheet, M-x meow-tutor is a guided tutorial.
 (use-package meow
   :ensure t
