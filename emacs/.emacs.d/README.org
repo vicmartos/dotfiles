@@ -1,15 +1,13 @@
 #+title: Vicmaeg's Emacs Configuration
 #+author: vicmaeg
 
-This is my personal Emacs configuration, designed to run as a daemon via
-~systemd~ and used through ~emacsclient~.
+Emacs 31.1+ configuration, run as a ~systemd~ user daemon and accessed
+through ~emacsclient~.
 
 * Design goals
 
-- Daemon-first: Emacs runs in the background, frames are opened with
-  ~emacsclient~.
-- Selection-first modal editing with Meow in both terminal and GUI frames,
-  using the standard QWERTY layout and modifier-free keypad commands.
+- Run Emacs in the background and open frames with ~emacsclient~.
+- Selection-first modal editing with Meow in terminal and GUI frames.
 - Minimal GUI chrome: no menu bar, tool bar, scroll bars, or tooltips.
 - Package management through ~use-package~ and MELPA.
 
@@ -36,327 +34,83 @@ As a detached GUI frame:
 
 * Installing or updating packages
 
-The daemon has no package archives and disables the default ~use-package~
-installation setting.  Install new packages by running Emacs directly before
-restarting the daemon.  Declarations with an explicit ~:ensure t~ can still
-attempt installation in daemon mode if their package is missing.
+Run standalone Emacs to install or update packages:
 
 #+begin_src sh
   emacs -nw
 #+end_src
 
-After installing, restart the daemon:
+Save your work, then restart the daemon:
 
 #+begin_src sh
   systemctl --user restart emacs
 #+end_src
 
-* Proposed shell aliases
+* External packages
 
-Add these to your =~/.bashrc= or =~/.zshrc=:
+27 configured packages and 6 dependencies.
 
-#+begin_src sh
-  # Terminal frame
-  alias e='emacsclient -t'
+| Package         | Why it is used                                                 |
+|-----------------+----------------------------------------------------------------|
+| avy             | Jump directly to visible text.                                 |
+| cape            | Add file, word, keyword, and Elisp completion sources.         |
+| consult         | Search files and buffers; navigate with live previews.         |
+| consult-denote  | Find and search Denote notes through Consult.                  |
+| corfu           | Show completion candidates inside buffers.                     |
+| denote          | Create, name, link, and organize notes.                        |
+| denote-journal  | Create daily journal entries with a template.                  |
+| denote-markdown | Support Markdown notes in Denote.                              |
+| diff-hl         | Show uncommitted changes beside buffer lines and in Dired.     |
+| dired-subtree   | Expand subdirectories inside a Dired buffer.                   |
+| embark          | Act on completion candidates and text at point.                |
+| embark-consult  | Add Consult previews to Embark collections.                    |
+| fontaine        | Switch between font presets.                                   |
+| ghostel         | Run terminals, compilation, and project agents in Emacs.       |
+| git-link        | Copy repository-host links to files and commits.               |
+| magit           | Inspect changes, stage files, commit, and manage Git repos.    |
+| marginalia      | Add descriptive annotations to minibuffer candidates.          |
+| markdown-mode   | Edit Markdown and GitHub-flavored Markdown; export via Pandoc. |
+| meow            | Modal editing, selection commands, and repeated edits.         |
+| move-text       | Move lines and selected regions up or down.                    |
+| orderless       | Match completion candidates using multiple search terms.       |
+| perspective     | Keep named workspaces with their own buffers and layouts.      |
+| sharper         | Run .NET project commands through a menu.                      |
+| trashed         | Browse and restore files from the system trash.                |
+| treesit-auto    | Select tree-sitter modes and install missing grammars.         |
+| vertico         | Display minibuffer completion candidates vertically.           |
+| xclip           | Share the system clipboard with terminal Emacs and WSL.        |
 
-  # Detached GUI frame (survives terminal close)
-  alias egui='nohup emacsclient -c -n < /dev/null > /dev/null 2>&1 &'
+* Package dependencies
 
-  # Daemon control
-  alias emacsd='systemctl --user status emacs'
-  alias emacsd-restart='systemctl --user restart emacs'
-  alias emacsd-stop='systemctl --user stop emacs'
+| Package           | Why it is needed                                 |
+|-------------------+--------------------------------------------------|
+| cond-let          | Binding helpers used by Magit and its libraries. |
+| dash              | List utilities used by the Dired extensions.     |
+| dired-hacks-utils | Shared helpers required by dired-subtree.        |
+| llama             | Lambda helpers used by Magit and its libraries.  |
+| magit-section     | Structured sections used by Magit's interface.   |
+| with-editor       | Emacsclient integration for Git commit editing.  |
 
-  # Run Emacs directly to install/update packages
-  alias emacs-install='emacs -nw'
-#+end_src
+* Built-in features
 
-* Terminal (TTY) usage
-
-The same daemon serves GUI frames (~emacsclient -c~) and terminal
-frames (~emacsclient -t~).  Everything works in TTY frames; keep in
-mind:
-
-- *Nerd Font required*: icons (nerd-icons family) are rendered by the
-  terminal's font.  Configure a Nerd Font in your terminal emulator or
-  icons show up as boxes.
-- *True color*: for themes to render exactly as in GUI, use a terminal
-  with true color support (e.g. ~COLORTERM=truecolor~); otherwise
-  colors fall back to the 256-color palette.
-- *Corfu popup*: provided by ~corfu-terminal~ (popon overlays) in TTY
-  frames; GUI frames keep native child frames.
-- *System clipboard*: ~xclip-mode~ integrates terminal copy and paste with
-  the desktop clipboard.  On Wayland it uses ~wl-copy~ and ~wl-paste~ from
-  ~wl-clipboard~; on WSL it uses Windows' ~clip.exe~ and ~powershell.exe~.
-  This also applies to Meow's copy and paste commands.  Use ~C-c y~ to copy
-  the current file location or the active Emacs region's line range.  In
-  Magit status, it copies a file path or a reference to selected lines
-  within one diff hunk (removed lines include their text).
-- *diff-hl*: margin indicators are used in both GUI and TTY (the
-  daemon starts headless, so frame-type checks at startup are
-  meaningless).
-- *Meow*: Normal state uses plain-letter commands; Insert state uses
-  ordinary Emacs input.  ~SPC~ opens the keypad in Normal and Motion
-  states.  Escape has no extra delay in terminal frames
-  (~meow-esc-delay~ is ~0~).  Herdr consumes ~C-SPC~ as its prefix:
-  select with Meow's ~w~, ~x~, or ~H/J/K/L~ in Normal state, or use
-  ~M-x set-mark-command~ in interface buffers.
-- *Keybindings terminals cannot send* (~C-.~, ~C-;~, ~C-=~):
-  | Action             | GUI    | TTY-safe |
-  |--------------------+--------+----------|
-  | embark-act         | ~C-.~  | ~C-c .~  |
-  | embark-dwim        | ~C-;~  | ~C-c ;~  |
-  | er/expand-region   | ~C-=~  | ~C-c =~  |
-  | er/contract-region | ~C-c -~ | ~C-c -~ |
-  Contract is only on ~C-c -~ because ~C--~ is the same character as
-  ~C-_~ (undo) — binding it would shadow undo everywhere.
-- *Fontaine* is a no-op in TTY frames (fonts are terminal-side) and is
-  intentionally applied unguarded at startup: the daemon is headless
-  then, so a ~display-graphic-p~ guard would break GUI frames.
-
-* Modal editing with Meow
-
-~meow-global-mode~ is enabled at startup.  Meow chooses the initial state
-using its built-in defaults: editing buffers generally use Normal state,
-while interfaces such as Dired and Magit use Motion state.
-
-Motion state keeps the major mode's letter bindings, including ~n/p~;
-~j/k~ movement overrides are disabled.  The configured Motion bindings are
-~F~ for ~avy-goto-char-2~, Escape to do nothing, and Meow's default ~SPC~
-keypad.  Meow's built-in integration handles temporary editing in interfaces
-such as Wdired.  The minibuffer uses Emacs input with Meow's Escape-to-quit
-binding.
-
-Meow selects text before acting on it: ~w y~ selects and copies a word,
-~x s~ selects and kills a line, and ~w c~ selects a word and enters Insert
-state to replace it.  ~v~ searches for a symbol; it is not Vim visual state.
-
-| Action                     | Keys                          |
-|----------------------------+-------------------------------|
-| Move left/down/up/right    | ~h/j/k/l~                     |
-| Extend selection           | ~H/J/K/L~                     |
-| Insert / append            | ~i/a~                         |
-| Open line above / below    | ~I/A~                         |
-| Select word / symbol       | ~w/W~                         |
-| Select line                | ~x~                           |
-| Copy / paste               | ~y/p~                         |
-| Kill / change selection    | ~s/c~                         |
-| Expand selection by thing  | ~0..9~                        |
-| Jump to two characters     | ~F~                           |
-| Undo                       | ~u~                           |
-| Cancel / restore selection | ~g/z~                         |
-| Exit Insert state          | Escape                        |
-| Keypad / cheatsheet        | ~SPC~ / ~SPC ?~               |
-
-Number keys expand selections by thing.  Meow also provides Beacon state
-for editing multiple locations.  The existing ~expand-region~ and
-~multiple-cursors~ packages remain configured alongside Meow.
-
-Keypad translates Emacs prefixes without holding modifiers: ~SPC x f~
-opens a file (~C-x C-f~), and ~SPC x SPC b~ switches buffers (~C-x b~).
-Existing ~C-c~ commands are also accessible: ~SPC y~ copies the current
-file location (~C-c y~).  ~SPC /~ describes keypad bindings.  Space inserts
-normally in Insert state and opens the keypad in Normal and Motion states.
-Run ~M-x meow-tutor~ for the tutorial.
-
-Meow must be installed before starting the daemon; use a standalone
-~emacs -nw~ session for initial installation.  After migrating from Evil,
-save your work and restart the daemon: reloading the init file cannot
-reliably undo Evil Collection's changes to already loaded keymaps.  Installed
-Evil packages can remain on disk; the configuration no longer loads them.
-
-* Notable packages
-
-** Completion framework
-- ~vertico~ :: vertical completion UI
-- ~marginalia~ :: rich annotations in the minibuffer
-- ~orderless~ :: flexible completion matching
-- ~consult~ :: search and navigation commands
-- ~embark~ :: context-aware actions
-- ~corfu~ :: in-buffer completion popup (uses standard capf)
-- ~corfu-terminal~ :: popon-based Corfu popup for TTY frames (child
-  frames in GUI frames; remove when on Emacs 31+ which has native TTY
-  child frames)
-- ~cape~ :: extra completion-at-point backends (dabbrev, file, keyword, elisp)
-- ~nerd-icons-corfu~ :: icons in the Corfu popup
-
-** Appearance
-- ~gruber-darker-theme~ :: default theme
-- ~modus-themes~, ~ef-themes~, ~doric-themes~ :: additional theme options
-- ~fontaine~ :: font preset management
-- ~nerd-icons~ family :: icons for dired, completion, and buffers
-
-** Navigation and editing
-- ~meow~ :: selection-first modal editing, keypad commands, and Beacon state
-- ~avy~ :: jump to visible text
-- ~expand-region~ :: incrementally expand selections
-- ~multiple-cursors~ :: edit multiple locations at once
-- ~move-text~ :: move lines and regions up/down
-- ~yasnippet~ :: snippets
-
-** Project and version control
-- ~project~ :: built-in project management
-- ~perspective~ :: workspace-like perspectives
-- ~magit~ :: Git interface
-- ~diff-hl~ :: version control indicators in the fringe/margin
-
-** Notes and organization
-- ~denote~ :: simple, note-taking system
-- ~denote-journal~ :: daily journal notes
-- ~org-mode~ :: built-in organization and agenda
-
-** Development
-- ~eglot~ :: built-in Language Server Protocol support (Emacs 31.1+)
-- ~treesit-auto~ :: automatic tree-sitter mode remapping
-
-** Terminal and shell
-- ~ghostel~ :: terminal emulator integration
-- ~eshell~ :: built-in Emacs shell
-
-** File management
-- ~dired-subtree~ :: subtree navigation in Dired
-- ~trashed~ :: trash can management
-
-* Language servers: Eglot
-
-Use Emacs 31.1 or newer.  Its bundled Eglot supports pull diagnostics;
-there is no separate Eglot package to install.  Older Emacs installations
-need an updated Eglot with pull-diagnostic support (introduced in 1.20).
-The tested combination is Emacs 31.1 / Eglot 1.24.31 and Microsoft
-~roslyn-language-server~ 5.12.0-1.26475.2.
-
-** C# / Microsoft Roslyn
-
-Install the .NET 10 runtime or SDK and the server before starting the daemon:
-
-#+begin_src sh
-  dotnet tool install --global roslyn-language-server --prerelease
-  dotnet tool list --global
-#+end_src
-
-~early-init.el~ makes the user-installed .NET SDK and global tools available
-to GUI and daemon sessions.  Both ~csharp-mode~ and ~csharp-ts-mode~ start
-Eglot automatically.  The server uses stdio and discovers projects under
-the project root through ~--autoLoadProjects~.  The adapter also explicitly
-opens the sole ~.sln~ or ~.slnx~ listed by ~project.el~, or opens its ~.csproj~
-files when there is no unique solution.  This avoids intermittent
-standalone-file fallback on fresh connections.  Project discovery respects
-~project.el~ ignore rules.  Existing root markers continue to apply;
-ensure the chosen root contains the intended
-~.sln~, ~.slnx~, or ~.csproj~.
-
-Flymake receives native ~textDocument/diagnostic~ responses.  Roslyn's
-static diagnostic capability is used; dynamic registration stays disabled.
-The local Roslyn adapter acknowledges ~workspace/diagnostic/refresh~
-requests and asynchronously rechecks that connection's open managed
-buffers.  It also rechecks after project initialization and displays
-Roslyn loading errors in ~*Messages*~.  This does not provide a diagnostic
-list for every unopened file in a solution.
-
-Use ~M-.~ on framework or NuGet symbols to open Roslyn's external-source
-files.  Files under ~MetadataAsSource~ open read-only and do not start a
-new server or ask for a project root.  Use ~M-,~ to return.  Navigation
-onward from those metadata buffers is not enabled.  Whether source is
-decompiled or obtained through source information depends on the assembly
-and Roslyn.
-
-** C / clangd
-
-Install ~clangd~ and provide ~compile_commands.json~ (or a ~.clangd~ file
-with compile flags).  Both ~c-mode~ and ~c-ts-mode~ start Eglot
-automatically.  clangd keeps ~--clang-tidy~, ~--header-insertion=never~, and
-~--completion-style=detailed~.  Meson compilation-database examples remain
-in ~lisp/my-eglot-c.el~.
-
-** Commands and behavior
-
-| Key       | Command                      |
-|-----------+------------------------------|
-| ~M-.~     | Find definition              |
-| ~M-?~     | Find references              |
-| ~M-,~     | Return from navigation       |
-| ~C-c l r r~ | Rename symbol              |
-| ~C-c l a a~ | Code actions               |
-| ~C-c l = =~ | Format buffer              |
-| ~C-c l = r~ | Format active region       |
-| ~C-c l w r~ | Reconnect server           |
-| ~C-c l w q~ | Shut down server           |
-| ~C-c l w d~ | Describe connection        |
-| ~C-c l w s~ | Start/connect manually     |
-
-These prefix bindings apply to Eglot-managed buffers.  ~M-x eglot~ remains
-available in other buffers.  Corfu uses Eglot's completion-at-point
-backend, Orderless filters its candidates, and Yasnippet supports snippet
-completions.  Hover information uses ElDoc; ~M-x eldoc-doc-buffer~ opens the
-documentation buffer.
-
-Formatting is explicit.  Automatic symbol highlighting, on-type
-formatting, code lenses, signature help, and code-action indicators are
-disabled.  Changes are sent after 0.5 seconds of idle time.  Eglot shuts
-down a connection after its last managed buffer closes, uses its default
-automatic reconnection policy, and honors bounded server-requested file
-watches (unlike the previous configuration, which disabled watching).
-
-Inspect ~M-x eglot-list-connections~, ~M-x eglot-describe-connection~,
-~M-x eglot-events-buffer~, and ~M-x flymake-show-buffer-diagnostics~ when
-troubleshooting.  If diagnostics are missing, check project-loading
-messages, project root, .NET availability, and the connection's
-~diagnosticProvider~ capability.  ~M-x flymake-start~ requests a fresh check.
-
-** Migration validation (2026-10-06)
-
-- Nine adapter tests passed; both language modules byte-compiled without
-  warnings.
-- Fresh Roslyn connections were tested with a ~.csproj~-only project and a
-  ~.slnx~ solution, under a path containing spaces and ~#~.
-- Initial, unsaved, and cross-file diagnostics, refresh requests,
-  completion, hover, references, rename, code-action edits, and formatting
-  passed against the installed server.
-- Framework and NuGet definitions opened actual decompiled files,
-  read-only, without additional servers.  Xref return restored the cursor.
-- clangd diagnostics, completion, and definition navigation passed with a
-  compilation database.
-- Corfu popups rendered in GUI and terminal clients; terminal snippet
-  expansion and automatic shutdown after the last managed buffer passed.
-
-These checks used temporary fixture projects and a separately named daemon
-with the complete worktree configuration.  Validate a normal working
-solution before activating the migration.  Roslyn may warn about its
-unsupported Razor ~textDocument/documentColor~ registration; this does
-not affect the tested C# features.
-
-** Worktree review and activation
-
-The migration is developed on ~codex/eglot-migration~ in
-~/home/vicmaeg/personal/dotfiles-eglot-migration~.  The original checkout's
-uncommitted clipboard changes are separate from this branch.
-
-For an isolated interactive preview, create a temporary configuration.
-This reuses installed packages and grammars and keeps writable state in
-the temporary directory:
-
-#+begin_src sh
-  task_emacs_preview=$(mktemp -d /tmp/eglot-preview.XXXXXX)
-  task_emacs_source=/home/vicmaeg/personal/dotfiles-eglot-migration/emacs/.emacs.d
-  ln -s "$task_emacs_source/init.el" "$task_emacs_preview/init.el"
-  ln -s "$task_emacs_source/lisp" "$task_emacs_preview/lisp"
-  cp "$task_emacs_source/custom.el" "$task_emacs_preview/custom.el"
-  cat > "$task_emacs_preview/early-init.el" <<'ELISP'
-  (setq package-user-dir "/home/vicmaeg/personal/dotfiles/emacs/.emacs.d/elpa"
-        treesit-extra-load-path
-        '("/home/vicmaeg/personal/dotfiles/emacs/.emacs.d/tree-sitter"))
-  (load "/home/vicmaeg/personal/dotfiles-eglot-migration/emacs/.emacs.d/early-init.el")
-  ELISP
-  emacs --init-directory="$task_emacs_preview" --daemon=eglot-preview
-  emacsclient -s eglot-preview -c
-  # Or: emacsclient -s eglot-preview -t
-  # After closing preview frames:
-  emacsclient -s eglot-preview -e '(kill-emacs)'
-#+end_src
-
-After review and successful real-project validation, integrate the branch
-into ~main~ while preserving the clipboard edits, then save active buffers
-and restart the normal daemon.  Keep the installed ~lsp-mode~ package
-until the migration is accepted; it is no longer loaded by this config.
-To roll back, restore the pre-migration configuration or revert the
-migration commit and restart the daemon.  No package deletion is needed.
+| Feature       | Why it is used                                            |
+|---------------+-----------------------------------------------------------|
+| package       | Install and load external packages.                       |
+| use-package   | Declare package settings, hooks, and bindings.            |
+| delsel        | Replace selected text when typing.                        |
+| dired         | Browse and manage files.                                  |
+| eglot         | Connect to Roslyn for C# and clangd for C/C++.            |
+| flymake       | Display language-server diagnostics.                      |
+| eldoc         | Show documentation at point.                              |
+| xref          | Find definitions and references; return from jumps.       |
+| project       | Find project files and run project commands.              |
+| org           | Manage tasks, agendas, and Org notes.                     |
+| which-key     | Show available commands after a key prefix.               |
+| savehist      | Persist minibuffer history and the kill ring.             |
+| recentf       | Remember recently visited files.                          |
+| saveplace     | Restore the cursor position when reopening files.         |
+| autorevert    | Refresh buffers when files change on disk.                |
+| winner        | Restore previous window layouts.                          |
+| hippie-expand | Expand text using existing words and other sources.       |
+| eshell        | Run an Emacs shell with Ghostel for visual commands.      |
+| modus-vivendi | Bundled dark theme used when Omarchy sync is unavailable. |
