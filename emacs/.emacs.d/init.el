@@ -353,20 +353,6 @@ The DWIM behaviour of this command is as follows:
     (add-hook 'completion-at-point-functions #'cape-keyword 90 t))
   (add-hook 'prog-mode-hook #'my/cape-prog-setup))
 
-(use-package yasnippet
-  :ensure t
-  :hook (prog-mode . yas-minor-mode)
-  :config
-  (yas-reload-all)
-  (define-key yas-minor-mode-map (kbd "TAB") nil)
-  (define-key yas-minor-mode-map [tab] nil)
-  (define-key yas-minor-mode-map (kbd "C-c s") #'yas-expand))
-
-(use-package yasnippet-snippets
-  :ensure t
-  :after yasnippet
-  :config (yas-reload-all))
-
 ;;; Kill ring and clipboard improvements
 
 ;; Enable terminal copy/paste through the system clipboard (wl-clipboard on

@@ -35,7 +35,7 @@
          denote-journal denote-markdown diff-hl dired-subtree
          embark embark-consult fontaine ghostel git-link
          magit marginalia meow move-text orderless perspective sharper trashed
-         treesit-auto vertico xclip yasnippet yasnippet-snippets)))
+         treesit-auto vertico xclip)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
