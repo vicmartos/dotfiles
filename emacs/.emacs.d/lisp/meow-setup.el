@@ -111,8 +111,9 @@
      '("z" . meow-pop-selection)
      '("'" . repeat)
      '("<escape>" . ignore)))
-  (meow-setup)
-  (meow-global-mode 1))
+  ;; Keep Meow configured but inactive at startup.  Enable it manually with
+  ;; M-x meow-global-mode when modal editing is wanted.
+  (meow-setup))
 
 (provide 'meow-setup)
 ;;; meow-setup.el ends here

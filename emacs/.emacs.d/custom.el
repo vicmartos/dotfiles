@@ -33,8 +33,8 @@
  '(package-selected-packages
    '(avy cape consult consult-denote corfu denote
          denote-journal denote-markdown diff-hl dired-subtree
-         embark embark-consult fontaine ghostel git-link
-         magit marginalia meow move-text orderless perspective sharper trashed
+         embark embark-consult expand-region fontaine ghostel git-link
+         magit marginalia meow move-text multiple-cursors orderless perspective sharper trashed
          treesit-auto vertico xclip)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

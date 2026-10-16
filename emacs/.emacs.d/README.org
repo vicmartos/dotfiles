@@ -7,7 +7,7 @@ through ~emacsclient~.
 * Design goals
 
 - Run Emacs in the background and open frames with ~emacsclient~.
-- Selection-first modal editing with Meow in terminal and GUI frames.
+- Standard Emacs editing by default, with Meow available on demand.
 - Minimal GUI chrome: no menu bar, tool bar, scroll bars, or tooltips.
 - Package management through ~use-package~ and MELPA.
 
@@ -48,7 +48,7 @@ Save your work, then restart the daemon:
 
 * External packages
 
-27 configured packages and 6 dependencies.
+29 configured packages and 6 dependencies.
 
 | Package         | Why it is used                                                 |
 |-----------------+----------------------------------------------------------------|
@@ -64,14 +64,16 @@ Save your work, then restart the daemon:
 | dired-subtree   | Expand subdirectories inside a Dired buffer.                   |
 | embark          | Act on completion candidates and text at point.                |
 | embark-consult  | Add Consult previews to Embark collections.                    |
+| expand-region   | Expand or contract the selected region by semantic units.     |
 | fontaine        | Switch between font presets.                                   |
 | ghostel         | Run terminals, compilation, and project agents in Emacs.       |
 | git-link        | Copy repository-host links to files and commits.               |
 | magit           | Inspect changes, stage files, commit, and manage Git repos.    |
 | marginalia      | Add descriptive annotations to minibuffer candidates.          |
 | markdown-mode   | Edit Markdown and GitHub-flavored Markdown; export via Pandoc. |
-| meow            | Modal editing, selection commands, and repeated edits.         |
+| meow            | Optional modal editing; enable with ~M-x meow-global-mode~.    |
 | move-text       | Move lines and selected regions up or down.                    |
+| multiple-cursors | Edit multiple locations at once.                             |
 | orderless       | Match completion candidates using multiple search terms.       |
 | perspective     | Keep named workspaces with their own buffers and layouts.      |
 | sharper         | Run .NET project commands through a menu.                      |
