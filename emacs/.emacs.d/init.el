@@ -489,6 +489,8 @@ The DWIM behaviour of this command is as follows:
 
 ;;; org mode configuration
 
+(add-hook 'org-mode-hook #'visual-line-mode)
+
 (setq org-directory (expand-file-name "~/org/"))
 (setq org-default-notes-file (expand-file-name "inbox.org" org-directory))
 (setq org-agenda-files (list (expand-file-name "todo.org" org-directory)
