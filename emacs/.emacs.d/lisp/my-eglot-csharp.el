@@ -98,14 +98,19 @@ there is no unique solution.  Respect project.el's ignored files."
   "Return the stdio contact for the installed Microsoft Roslyn server."
   (list 'my-eglot-roslyn
         "roslyn-language-server" "--stdio" "--logLevel" "Warning"
-        "--clientProcessId" (number-to-string (emacs-pid))
-        "--autoLoadProjects"))
+        ;; `my-eglot-roslyn-open-projects' owns project loading.  Enabling
+        ;; --autoLoadProjects as well starts a second discovery path.
+        "--clientProcessId" (number-to-string (emacs-pid))))
 
 (defun my/eglot-csharp-setup ()
   "Start Eglot for project files; make Roslyn metadata sources read-only."
   (if (and buffer-file-name
            (string-match-p "\\(?:^\\|/\\)MetadataAsSource/" buffer-file-name))
       (read-only-mode 1)
+    ;; `eglot-ensure' connects from a later post-command hook, so this must
+    ;; be buffer-local rather than a temporary let binding.  Roslyn can
+    ;; initialize in the background while the source buffer stays usable.
+    (setq-local eglot-sync-connect nil)
     (eglot-ensure)))
 
 (add-to-list 'eglot-server-programs
