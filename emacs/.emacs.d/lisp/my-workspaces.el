@@ -50,6 +50,32 @@
   (call-interactively
    (if (display-graphic-p) #'persp-kill-buffer #'kill-buffer)))
 
+(defun my/persp-kill-with-buffers ()
+  "Kill the current perspective and all its buffers, including shared ones.
+Keep ordinary buffer-kill prompts.  If a buffer refuses to be killed,
+leave the perspective in place with its remaining buffers."
+  (interactive)
+  (unless (and persp-mode (persp-frame-good-p))
+    (user-error "No workspace active in this frame"))
+  (let ((persp (persp-get-current))
+        (persp-autokill-persp-when-removed-last-buffer nil))
+    (when (persp-nil-p persp)
+      (user-error "Cannot close the unfiltered nil perspective"))
+    (dolist (buffer (copy-sequence (persp-buffers persp)))
+      (when (buffer-live-p buffer)
+        (with-current-buffer buffer
+          ;; Allow shared buffers to die rather than merely detaching them.
+          ;; Keep the other query functions and persp-mode's cleanup hooks.
+          (let ((kill-buffer-query-functions
+                 (remq #'persp-kill-buffer-query-function
+                       kill-buffer-query-functions)))
+            (unless (kill-buffer buffer)
+              (user-error "Buffer %s kept; workspace remains open"
+                          (buffer-name buffer)))))))
+    (persp-kill (persp-name persp) t nil)))
+
+(define-key persp-key-map (kbd "K") #'my/persp-kill-with-buffers)
+
 (defun my/initial-buffer ()
   "Open the invoking directory in terminal frames, or scratch in GUI frames."
   (if (display-graphic-p)

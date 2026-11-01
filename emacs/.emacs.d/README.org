@@ -79,6 +79,7 @@ the last workspace.  Each workspace has its own buffer list and window layout.
 | ~C-c p n / p~ | Switch to the next / previous workspace.            |
 | ~C-c p a~     | Add an existing buffer to this workspace.           |
 | ~C-c p k~     | Remove a buffer from this workspace.                |
+| ~C-c p K~     | Close this workspace and kill all its buffers.      |
 | ~C-c p w / l~ | Save / load workspace state manually.               |
 | ~C-c o o~     | Open the Org layout.                               |
 | ~C-c o c~     | Open the configuration layout.                     |
@@ -89,6 +90,10 @@ the last workspace.  Each workspace has its own buffer list and window layout.
 The initial ~main~ workspace is a regular, filtered workspace.  Buffer
 selection uses persp-mode's native completion, including the standard
 ~C-x 4 b~ and ~C-x 5 b~ commands for another window or frame.
+
+~C-c p K~ also kills buffers shared with other workspaces.  Normal prompts
+for unsaved changes and running processes still apply.  If a buffer is kept
+or the command is cancelled, the workspace remains with its surviving buffers.
 
 Workspace state is saved under ~persp-confs/~ when the last GUI client frame
 closes and when Emacs exits.  After a daemon restart it restores shortly
