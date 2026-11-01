@@ -51,10 +51,6 @@
 (defvar my/omarchy--theme-watch nil
   "File notification descriptor for Omarchy theme changes.")
 
-(defconst my/omarchy--font-attributes
-  '(:family :foundry :width :height :weight :slant)
-  "Default-face attributes preserved while reloading the color theme.")
-
 (defun my/omarchy--file-contents (file)
   "Return FILE's literal contents, or nil when it cannot be read."
   (when (file-readable-p file)
@@ -116,46 +112,36 @@
       (unless (my/omarchy--render-colors)
         (error "Could not render the current Omarchy colors")))))
 
-(defun my/omarchy--default-font-state ()
-  "Return the current default-face font attributes."
-  (mapcar (lambda (attribute)
-            (cons attribute
-                  (face-attribute 'default attribute nil t)))
-          my/omarchy--font-attributes))
-
-(defun my/omarchy--restore-default-font-state (state)
-  "Restore default-face font attributes from STATE."
-  (dolist (entry state)
-    (set-face-attribute 'default nil (car entry) (cdr entry))))
-
 (defun my/omarchy-apply-theme ()
   "Load the active Omarchy colors and apply its packaged Emacs theme."
   (interactive)
   (if (not (file-readable-p my/omarchy-generated-colors-file))
       (message "Omarchy colors are unavailable; keeping the current theme")
-    (let ((font-state (my/omarchy--default-font-state)))
-      (unwind-protect
-          (progn
-            ;; Semantic colors may be absent from older third-party theme
-            ;; palettes. Clear their previous values before loading the newly
-            ;; generated file.
-            (dolist (symbol '(omarchy-color-muted omarchy-color-selection
-                              omarchy-color-dark-fg omarchy-color-light-fg
-                              omarchy-color-bright-fg omarchy-color-dark-bg
-                              omarchy-color-darker-bg omarchy-color-lighter-bg
-                              omarchy-color-orange))
-              (makunbound symbol))
-            (load-file my/omarchy-generated-colors-file)
-            (when (memq 'omarchy custom-enabled-themes)
-              (disable-theme 'omarchy))
-            (put 'omarchy 'theme-settings nil)
-            (setq custom-known-themes
-                  (delq 'omarchy custom-known-themes))
-            (load-file my/omarchy-package-theme-file)
-            (enable-theme 'omarchy))
-        ;; Enabling a theme resets unspecified default-face font attributes.
-        ;; Restore them so Fontaine stays authoritative across live reloads.
-        (my/omarchy--restore-default-font-state font-state)))
+    (unwind-protect
+        (progn
+          ;; Semantic colors may be absent from older third-party theme
+          ;; palettes. Clear their previous values before loading the newly
+          ;; generated file.
+          (dolist (symbol '(omarchy-color-muted omarchy-color-selection
+                            omarchy-color-dark-fg omarchy-color-light-fg
+                            omarchy-color-bright-fg omarchy-color-dark-bg
+                            omarchy-color-darker-bg omarchy-color-lighter-bg
+                            omarchy-color-orange))
+            (makunbound symbol))
+          (load-file my/omarchy-generated-colors-file)
+          (when (memq 'omarchy custom-enabled-themes)
+            (disable-theme 'omarchy))
+          (put 'omarchy 'theme-settings nil)
+          (setq custom-known-themes
+                (delq 'omarchy custom-known-themes))
+          (load-file my/omarchy-package-theme-file)
+          (enable-theme 'omarchy))
+      ;; Reapply the graphical font specs after loading the color theme.
+      ;; Never copy the selected frame's attributes into global defaults:
+      ;; a daemon's terminal frame has a font height of 1.
+      (when (and (bound-and-true-p fontaine-current-preset)
+                 (fboundp 'fontaine-set-preset))
+        (fontaine-set-preset fontaine-current-preset)))
     t))
 
 (defun my/omarchy--managed-hook-p (file)
