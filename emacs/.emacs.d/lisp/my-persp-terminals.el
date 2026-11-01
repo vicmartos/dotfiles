@@ -1,10 +1,10 @@
 ;;; my-persp-terminals.el --- Perspective layout for ghostel terminal buffers -*- lexical-binding: t; -*-
 
 (require 'cl-lib)
-(require 'perspective)
+(require 'persp-mode)
 
-(declare-function persp-switch "perspective")
-(declare-function persp-add-buffer "perspective")
+(declare-function persp-switch "persp-mode")
+(declare-function persp-add-buffer "persp-mode")
 
 (defvar my/persp-map)
 

@@ -1,5 +1,5 @@
-#+title: Vicmaeg's Emacs Configuration
-#+author: vicmaeg
+#+title: Vicmartos's Emacs Configuration
+#+author: vicmartos
 
 Emacs 31.1+ configuration, run as a ~systemd~ user daemon and accessed
 through ~emacsclient~.
@@ -46,6 +46,59 @@ Save your work, then restart the daemon:
   systemctl --user restart emacs
 #+end_src
 
+* Workspaces
+
+Terminal frames use a project-focused workflow without perspectives.  Running
+~emacsclient -t~ (or ~e~) without file arguments opens Dired in the invoking
+shell's directory; explicit file arguments open those files as usual.
+
+| Key       | Terminal action                                      |
+|-----------+------------------------------------------------------|
+| ~C-x b~   | Switch buffers in the current project.                |
+| ~C-x C-b~ | List buffers in the current project.                  |
+| ~C-x B~   | Select any buffer using Consult.                      |
+| ~C-x k~   | Kill a buffer normally.                               |
+| ~C-x p f~ | Find a file in the current project.                    |
+| ~C-x g~   | Open Magit status.                                    |
+
+Outside a project, ~C-x b~ and ~C-x C-b~ show all buffers.  Terminal clients
+share live buffers with the daemon, but do not restore or save workspace
+layouts.  ~C-x g~ also works in GUI frames.
+
+~persp-mode~ keeps workspaces in the daemon, shared across GUI client frames.
+Closing a frame keeps its workspace and live buffers; a new frame resumes
+the last workspace.  Each workspace has its own buffer list and window layout.
+
+| Key           | Action                                             |
+|---------------+----------------------------------------------------|
+| ~C-x b~       | Switch between buffers in the current workspace.   |
+| ~C-x B~       | Add an existing buffer; ~C-u~ also switches to it.   |
+| ~C-x C-b~     | List the current workspace's buffers.               |
+| ~C-x k~       | Kill or detach a buffer from the current workspace. |
+| ~C-c p s~     | Switch to a workspace, or create one by name.        |
+| ~C-c p n / p~ | Switch to the next / previous workspace.            |
+| ~C-c p a~     | Add an existing buffer to this workspace.           |
+| ~C-c p k~     | Remove a buffer from this workspace.                |
+| ~C-c p w / l~ | Save / load workspace state manually.               |
+| ~C-c o o~     | Open the Org layout.                               |
+| ~C-c o c~     | Open the configuration layout.                     |
+| ~C-c o p~     | Open a project workspace.                          |
+| ~C-c o t~     | Arrange terminal buffers side by side.              |
+| ~C-c o a~     | Arrange AI agent buffers side by side.              |
+
+The initial ~main~ workspace is a regular, filtered workspace.  Buffer
+selection uses persp-mode's native completion, including the standard
+~C-x 4 b~ and ~C-x 5 b~ commands for another window or frame.
+
+Workspace state is saved under ~persp-confs/~ when the last GUI client frame
+closes and when Emacs exits.  After a daemon restart it restores shortly
+after the first GUI client frame opens.  File buffers and layouts can be restored
+from disk; running terminal and agent processes survive frame closure only
+while the daemon remains running.
+
+Workspace state from the old ~perspective~ package (~persp-state.el~) is
+left intact and is not imported into the new format.
+
 * External packages
 
 29 configured packages and 6 dependencies.
@@ -75,7 +128,7 @@ Save your work, then restart the daemon:
 | move-text       | Move lines and selected regions up or down.                    |
 | multiple-cursors | Edit multiple locations at once.                             |
 | orderless       | Match completion candidates using multiple search terms.       |
-| perspective     | Keep named workspaces with their own buffers and layouts.      |
+| persp-mode      | Share named workspaces, buffers, and layouts across frames.    |
 | sharper         | Run .NET project commands through a menu.                      |
 | trashed         | Browse and restore files from the system trash.                |
 | treesit-auto    | Select tree-sitter modes and install missing grammars.         |

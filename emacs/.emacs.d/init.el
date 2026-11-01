@@ -286,10 +286,7 @@ The DWIM behaviour of this command is as follows:
   :ensure t
   :hook (completion-list-mode . consult-preview-mode)
   :bind
-  (("C-x b" . consult-buffer)
-   ("C-x 4 b" . consult-buffer-other-window)
-   ("C-x 5 b" . consult-buffer-other-frame)
-   ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+  (("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
    ("M-y" . consult-yank-pop)
    ("M-s M-s" . consult-ripgrep)
    ("M-s l" . consult-line)
@@ -606,45 +603,27 @@ The DWIM behaviour of this command is as follows:
 
 (setq project-vc-extra-root-markers '("fourthline.yaml" ".project.el"))
 
-;;; Perspective - workspace-centric perspectives
+;;; Workspaces shared across graphical daemon client frames
 
-(use-package perspective
+(use-package persp-mode
   :ensure t
+  :demand t
   :bind
-  (("C-x C-b" . persp-list-buffers)
-   ("C-x k" . persp-kill-buffer*))
+  (("C-x b" . my/switch-to-buffer)
+   ("C-x C-b" . my/list-buffers)
+   ("C-x B" . my/add-or-switch-buffer)
+   ("C-x k" . my/kill-buffer))
   :custom
-  (persp-mode-prefix-key (kbd "C-c p"))
-  (persp-state-default-file (locate-user-emacs-file "persp-state.el"))
-  (persp-sort 'created)
-  (persp-show-modestring t)
-  (persp-switch-wrap t)
-  :init
-  (persp-mode)
+  (persp-auto-resume-time 0.1)
+  (persp-set-read-buffer-function t)
+  ;; Check membership directly; the default predicate caches across switches.
+  (persp-set-frame-buffer-predicate
+   (lambda (buffer) (persp-contain-buffer-p buffer (persp-get-current))))
+  (persp-switch-to-added-buffer nil)
+  (persp-add-buffer-on-after-change-major-mode 'free)
   :config
-  ;; Auto-save perspective state on exit (manual restore only)
-  (add-hook 'kill-emacs-hook #'persp-state-save)
-
-  ;; Make previous-buffer/next-buffer perspective-aware
-  (setq switch-to-prev-buffer-skip
-        (lambda (win buff bury-or-kill)
-          (not (persp-is-current-buffer buff))))
-
-  ;; Add perspective buffer source to consult-buffer
-  (with-eval-after-load 'consult
-    (defvar consult--source-perspective
-      (list :name     "Perspective Buffers"
-            :narrow   ?p
-            :history  'buffer-name-history
-            :category 'buffer
-            :state    #'consult--buffer-state
-            :default  t
-            :items    (lambda () (consult--buffer-query
-                             :predicate #'persp-is-current-buffer
-                             :sort 'visibility
-                             :as #'buffer-name)))
-      "Set perspective buffer list for consult-buffer.")
-    (add-to-list 'consult-buffer-sources 'consult--source-perspective)))
+  (require 'my-workspaces)
+  (persp-mode 1))
 
 ;;; version control
 
@@ -653,6 +632,7 @@ The DWIM behaviour of this command is as follows:
 (use-package magit
   :ensure t
   :commands (magit-status)
+  :bind ("C-x g" . magit-status)
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   :hook (magit-mode . visual-line-mode))

@@ -1,15 +1,14 @@
 ;;; my-perspectives.el --- Predefined perspective layouts -*- lexical-binding: t; -*-
 
-(require 'perspective)
+(require 'persp-mode)
 (require 'project)
 
-(declare-function perspectives-hash "perspective")
 (declare-function org-agenda-list "org-agenda")
 (defvar org-agenda-window-setup)
 
 (defun my/persp--switch-or-create (name setup-fn)
   "Switch to perspective NAME; run SETUP-FN only when it is newly created."
-  (let ((existing (gethash name (perspectives-hash))))
+  (let ((existing (persp-with-name-exists-p name)))
     (persp-switch name)
     (unless existing
       (funcall setup-fn))))

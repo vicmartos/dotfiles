@@ -1,11 +1,11 @@
 ;;; my-persp-agents.el --- Perspective layout for AI agent ghostel buffers -*- lexical-binding: t; -*-
 
 (require 'cl-lib)
-(require 'perspective)
+(require 'persp-mode)
 (require 'my-persp-terminals)
 
-(declare-function persp-switch "perspective")
-(declare-function persp-add-buffer "perspective")
+(declare-function persp-switch "persp-mode")
+(declare-function persp-add-buffer "persp-mode")
 
 (defvar my/persp-map)
 

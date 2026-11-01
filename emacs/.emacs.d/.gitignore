@@ -18,6 +18,7 @@ recentf.eld
 fontaine-latest-state.eld
 .mc-lists.el
 persp-state.el
+persp-confs/
 *-tabspaces-session.el
 tabsession.el
 bookmarks
