@@ -84,8 +84,26 @@ the last workspace.  Each workspace has its own buffer list and window layout.
 | ~C-c o o~     | Open the Org layout.                               |
 | ~C-c o c~     | Open the configuration layout.                     |
 | ~C-c o p~     | Open a project workspace.                          |
-| ~C-c o t~     | Arrange terminal buffers side by side.              |
-| ~C-c o a~     | Arrange AI agent buffers side by side.              |
+| ~C-c o a~     | Pick an agent and switch to its workspace.              |
+
+Open ~ghostel-project~ with ~C-x p t~ and run ~codex~, Cursor's ~agent~,
+or ~opencode~ normally.  Use ~C-u C-x p t~ for another terminal.  ~C-c o a~
+searches agents across workspaces by app, status, directory, workspace, and
+buffer name.  Shared agents prompt for a workspace; selection focuses the
+terminal while preserving the workspace layout.  Terminal frames switch
+buffers directly.
+
+Discovery uses reported application identity or local foreground executable/
+script identity, never buffer names.  Extend ~my/agent-identities~ for other
+CLIs.  Interpreter wrappers with generic script names may not be recognized
+unless the program reports its application identity.  Remote agents require
+reported identity.  Working/done/blocked/error/idle states require status
+reports understood by Ghostel; otherwise the picker says "status unavailable".
+Status labels are colored blue for working, gray for idle, yellow for blocked,
+red for errors, and green for done.  Customize the ~my/agent-*~ faces to change
+these colors.
+The list refreshes when opened, and completed records remain until Ghostel
+clears them.  The custom Cursor/OpenCode project launchers have been removed.
 
 The initial ~main~ workspace is a regular, filtered workspace.  Buffer
 selection uses persp-mode's native completion, including the standard

@@ -764,9 +764,7 @@ The DWIM behaviour of this command is as follows:
 (add-to-list 'eshell-visual-commands "opencode")
 (add-to-list 'eshell-visual-commands "cursor")
 
-(require 'my-persp-terminals)
 (require 'my-persp-agents)
-(require 'ghostel-agent-project)
 
 (defun my/project-magit-status ()
   "Run `magit-status' in the root of the current project."
@@ -775,17 +773,13 @@ The DWIM behaviour of this command is as follows:
     (magit-status)))
 
 (with-eval-after-load 'project
-  (define-key project-prefix-map (kbd "a") #'ghostel-agent-project-cursor)
-  (define-key project-prefix-map (kbd "A") #'ghostel-agent-project-opencode)
   (let ((found-magit nil))
     (dolist (entry project-switch-commands)
       (when (and (listp entry) (eq (car entry) #'magit-status))
         (setq found-magit t)))
     (unless found-magit
       (add-to-list 'project-switch-commands '(my/project-magit-status "Magit" ?m))))
-  (add-to-list 'project-switch-commands '(ghostel-project "Terminal" ?t))
-  (add-to-list 'project-switch-commands '(ghostel-agent-project-cursor "Agent (Cursor)" ?a))
-  (add-to-list 'project-switch-commands '(ghostel-agent-project-opencode "Agent (OpenCode)" ?A)))
+  (add-to-list 'project-switch-commands '(ghostel-project "Terminal" ?t)))
 
 ;;; markdown mode
 (use-package markdown-mode
