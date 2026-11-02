@@ -248,10 +248,7 @@ The DWIM behaviour of this command is as follows:
 
 (use-package marginalia
   :ensure t
-  :hook (after-init . marginalia-mode)
-  :config
-  (setq marginalia-align-max-width 80)
-  (setq marginalia-align-separator 15))
+  :hook (after-init . marginalia-mode))
 
 (use-package orderless
   :ensure t
@@ -295,7 +292,6 @@ The DWIM behaviour of this command is as follows:
    ("C-x M-:" . consult-complex-command))
   :config
   (setq consult-narrow-key "<")
-  (setq consult-line-numbers-width 4)
   (setq consult-async-min-input 2)
   (setq consult-async-refresh-delay 0.15)
   (setq consult-async-input-throttle 0.2)
@@ -453,9 +449,7 @@ The DWIM behaviour of this command is as follows:
 
 (use-package denote-markdown
   :ensure t
-  :after denote
-  :config
-  (setq denote-markdown-use-markdown-fontification t))
+  :after denote)
 
 (use-package consult-denote
   :ensure t
@@ -525,7 +519,7 @@ The DWIM behaviour of this command is as follows:
   (setq avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l ?q ?w ?e ?r ?t ?y ?u ?i ?o ?p ?z ?x ?c ?v ?b ?n ?m))
   (setq avy-style 'pre)
   (setq avy-all-windows nil)
-  (setq avy-single-candidate-action nil)
+  (setq avy-single-candidate-jump nil)
   :bind
   (("M-g c" . avy-goto-char-timer)
    ("M-g f" . avy-goto-line)
