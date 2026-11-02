@@ -21,11 +21,6 @@
 
 (add-to-list 'load-path (locate-user-emacs-file "lisp"))
 
-(add-to-list 'display-buffer-alist
-             '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
-               (display-buffer-no-window)
-               (allow-no-window . t)))
-
 ;; use ripgrep
 
 (setq xref-search-program 'ripgrep)
@@ -241,6 +236,12 @@ The DWIM behaviour of this command is as follows:
   :config
   (setq vertico-cycle t)
   (setq vertico-resize t))
+
+(use-package vertico-repeat
+  :ensure nil
+  :after vertico
+  :bind ("M-R" . vertico-repeat)
+  :hook (minibuffer-setup . vertico-repeat-save))
 
 (use-package marginalia
   :ensure t
@@ -499,7 +500,8 @@ The DWIM behaviour of this command is as follows:
 (use-package diff-hl
   :ensure t
   :hook ((after-init . global-diff-hl-mode)
-         (dired-mode . diff-hl-dired-mode))
+         (dired-mode . diff-hl-dired-mode)
+         (magit-post-refresh . diff-hl-magit-post-refresh))
   :config
   (setq diff-hl-side 'left)
   ;; Margins everywhere: the daemon starts headless, so a
@@ -755,7 +757,7 @@ The DWIM behaviour of this command is as follows:
 (with-eval-after-load 'project
   (let ((found-magit nil))
     (dolist (entry project-switch-commands)
-      (when (and (listp entry) (eq (car entry) #'magit-status))
+      (when (and (listp entry) (eq (car entry) #'my/project-magit-status))
         (setq found-magit t)))
     (unless found-magit
       (add-to-list 'project-switch-commands '(my/project-magit-status "Magit" ?m))))

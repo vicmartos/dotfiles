@@ -7,7 +7,7 @@ through ~emacsclient~.
 * Design goals
 
 - Run Emacs in the background and open frames with ~emacsclient~.
-- Standard Emacs editing by default, with Meow available on demand.
+- Standard Emacs editing.
 - Minimal GUI chrome: no menu bar, tool bar, scroll bars, or tooltips.
 - Package management through ~use-package~ and MELPA.
 
@@ -40,11 +40,19 @@ Run standalone Emacs to install or update packages:
   emacs -nw
 #+end_src
 
+Inspect ~*Warnings*~ and ~*Compile-Log*~ after changing packages. These
+buffers use normal display behavior so package failures stay visible.
+
 Save your work, then restart the daemon:
 
 #+begin_src sh
   systemctl --user restart emacs
 #+end_src
+
+* Minibuffer completion
+
+~M-R~ repeats a Vertico completion session. Sessions are recorded through
+the minibuffer setup hook and saved across restarts by Savehist.
 
 * Workspaces
 
