@@ -688,14 +688,6 @@ The DWIM behaviour of this command is as follows:
   :custom
   (treesit-auto-install 'prompt)  ; Ask before installing grammars
   :config
-  ;; Add C# recipe for treesit-auto
-  (add-to-list 'treesit-auto-recipe-list
-               (make-treesit-auto-recipe
-                :lang 'c-sharp
-                :ts-mode 'csharp-ts-mode
-                :remap 'csharp-mode
-                :url "https://github.com/tree-sitter/tree-sitter-c-sharp"
-                :source-dir "src"))
   ;; Register tree-sitter modes for all supported languages
   (treesit-auto-add-to-auto-mode-alist 'all)
   ;; Enable global mode
