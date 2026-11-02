@@ -284,7 +284,6 @@ The DWIM behaviour of this command is as follows:
 
 (use-package consult
   :ensure t
-  :hook (completion-list-mode . consult-preview-mode)
   :bind
   (("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
    ("M-y" . consult-yank-pop)
@@ -318,8 +317,7 @@ The DWIM behaviour of this command is as follows:
 
 (use-package embark-consult
   :ensure t
-  :hook
-  (embark-collect-mode . consult-preview-minor-mode))
+  :after (embark consult))
 
 (use-package corfu
   :ensure t
