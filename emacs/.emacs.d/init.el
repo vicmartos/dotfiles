@@ -747,7 +747,6 @@ The DWIM behaviour of this command is as follows:
   :config
   (setq ghostel-shell (or (getenv "SHELL") "/bin/bash"))
   (setq ghostel-kill-buffer-on-exit t)
-  (setq ghostel-max-scrollback 10000)
   (setq ghostel-enable-url-detection t)
   (setq ghostel-enable-file-detection t)
   (setq ghostel-adaptive-fps t)
