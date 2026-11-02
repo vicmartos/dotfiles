@@ -34,7 +34,7 @@
    '(avy cape consult consult-denote corfu denote
          denote-journal denote-markdown diff-hl dired-subtree
          embark embark-consult expand-region fontaine ghostel git-link
-         magit marginalia meow move-text multiple-cursors orderless persp-mode sharper trashed
+         magit marginalia move-text multiple-cursors orderless persp-mode sharper trashed
          treesit-auto vertico xclip)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

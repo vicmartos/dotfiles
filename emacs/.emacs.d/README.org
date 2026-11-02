@@ -124,7 +124,7 @@ left intact and is not imported into the new format.
 
 * External packages
 
-29 configured packages and 6 dependencies.
+28 configured packages and 6 dependencies.
 
 | Package         | Why it is used                                                 |
 |-----------------+----------------------------------------------------------------|
@@ -147,7 +147,6 @@ left intact and is not imported into the new format.
 | magit           | Inspect changes, stage files, commit, and manage Git repos.    |
 | marginalia      | Add descriptive annotations to minibuffer candidates.          |
 | markdown-mode   | Edit Markdown and GitHub-flavored Markdown; export via Pandoc. |
-| meow            | Optional modal editing; enable with ~M-x meow-global-mode~.    |
 | move-text       | Move lines and selected regions up or down.                    |
 | multiple-cursors | Edit multiple locations at once.                             |
 | orderless       | Match completion candidates using multiple search terms.       |

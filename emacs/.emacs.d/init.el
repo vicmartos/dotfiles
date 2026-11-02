@@ -21,10 +21,6 @@
 
 (add-to-list 'load-path (locate-user-emacs-file "lisp"))
 
-;;; Modal editing (Meow)
-
-(require 'meow-setup)
-
 (add-to-list 'display-buffer-alist
              '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
                (display-buffer-no-window)
@@ -562,7 +558,8 @@ The DWIM behaviour of this command is as follows:
    ("C-c m s"     . mc/skip-to-next-like-this)
    ("C-c m S"     . mc/skip-to-previous-like-this))
   :config
-  (setq mc/always-run-for-all t))
+  ;; Ask how to classify unknown commands before repeating them at every cursor.
+  (setq mc/always-run-for-all nil))
 
 ;;; Move text
 
