@@ -29,7 +29,7 @@
 (require 'eglot)
 
 (add-to-list 'eglot-server-programs
-             '((c-mode c-ts-mode c++-mode c++-ts-mode objc-mode)
+             '((c-mode c-ts-mode)
                . ("clangd" "--clang-tidy" "--header-insertion=never"
                   "--completion-style=detailed")))
 
