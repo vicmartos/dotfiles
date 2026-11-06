@@ -14,11 +14,6 @@ PATH="$PATH:$HOME/.dotnet/tools"
 PATH="$PATH:$HOME/.opencode/bin"
 PATH="$PATH:$HOME/.local/bin"
 
-if [ -z "$SSH_AUTH_SOCK" ] ; then
-  eval `ssh-agent -s`
-  ssh-add ~/.ssh/github
-fi
-
 alias lg=lazygit
 alias hw=herdr-workspacer
 # Emacs
