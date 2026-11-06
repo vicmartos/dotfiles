@@ -148,13 +148,13 @@ The DWIM behaviour of this command is as follows:
            :inherit medium
            :default-height 260)
           (t
-           :default-family "Aporetic Serif Mono"
+           :default-family "Aporetic Sans Mono"
            :default-weight regular
            :default-slant normal
            :default-width normal
            :default-height 100
 
-           :fixed-pitch-family "Aporetic Serif Mono"
+           :fixed-pitch-family "Aporetic Sans Mono"
            :fixed-pitch-weight nil
            :fixed-pitch-slant nil
            :fixed-pitch-width nil
@@ -166,7 +166,7 @@ The DWIM behaviour of this command is as follows:
            :fixed-pitch-serif-width nil
            :fixed-pitch-serif-height 1.0
 
-           :variable-pitch-family "Aporetic Sans"
+           :variable-pitch-family "Aporetic Serif"
            :variable-pitch-weight nil
            :variable-pitch-slant nil
            :variable-pitch-width nil
