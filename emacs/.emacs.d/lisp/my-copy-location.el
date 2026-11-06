@@ -4,8 +4,9 @@
 (require 'seq)
 (require 'subr-x)
 
-;; Let the byte compiler check Magit's section slots.
-(eval-when-compile (require 'magit-base))
+;; Let the byte compiler check Magit's section slots when it is installed.
+;; This helper also loads before use-package installs Magit on first startup.
+(eval-when-compile (require 'magit-base nil t))
 
 (declare-function magit-section-at "magit-section" (&optional position))
 (declare-function magit-section-lineage "magit-section" (section &optional raw))
