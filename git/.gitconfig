@@ -9,6 +9,7 @@
   navigate = true
   line-numbers = true
 [credential]
+  # TODO: Remove this at some point after checking how can I enable git credential at work with MacOS
   helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe
 [color]
   ui = auto
