@@ -11,6 +11,12 @@
 [credential]
   # TODO: Remove this at some point after checking how can I enable git credential at work with MacOS
   helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
 [color]
   ui = auto
   diff = auto
@@ -75,3 +81,4 @@
   clean-branches = "!f() { current=$(git branch --show-current); branches=$(git for-each-ref --format='%(refname:short)' --merged=HEAD refs/heads | grep -Ev '^(main|master|dev)$' | grep -Fvx \"$current\" | fzf --multi --preview='git log --color=always --oneline --decorate -20 {}'); [ -z \"$branches\" ] || printf '%s\\n' \"$branches\" | xargs -r git branch -d --; }; f"
 [include]
   path = ~/.gitconfig.local
+
