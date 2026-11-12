@@ -75,7 +75,7 @@ map({
 	},
 	{ "gD", Snacks.picker.lsp_declarations, desc = "LSP Goto Declaration" },
 	{ "gy", Snacks.picker.lsp_type_definitions, desc = "LSP Goto T[y]pe Definition" },
-	{ "gr", Snacks.picker.lsp_references, desc = "LSP Goto Definition" },
+	{ "grr", Snacks.picker.lsp_references, desc = "LSP Goto Definition" },
 	{ "K", vim.lsp.buf.hover, desc = "Hover" },
 	{ "gK", vim.lsp.buf.signature_help, desc = "Signature Help" },
 	{
@@ -117,7 +117,7 @@ map({
 	{ ";r", Snacks.picker.grep, desc = "Live grep" },
 	{ ";;", Snacks.picker.resume, desc = "Resume picker" },
 	{
-		"\\\\",
+		";b",
 		function()
 			Snacks.picker.buffers({
 				confirm = function(picker, item)
