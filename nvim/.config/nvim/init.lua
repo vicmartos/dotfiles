@@ -1,21 +1,16 @@
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+if vim.loader then
+	vim.loader.enable()
+end
 
--- Disable optional remote providers that are not used by this config.
-vim.g.loaded_node_provider = 0
-vim.g.loaded_perl_provider = 0
-vim.g.loaded_python3_provider = 0
-vim.g.loaded_ruby_provider = 0
+-- _G.dd = function(...)
+--     require("util.debug").dump(...)
+-- end
+-- vim.print = _G.dd
 
-vim.loader.enable()
-
-require("options")
-require("keymaps")
-require("autocmds")
-require("cmdline")
-require("diagnostics")
-require("pack")
-require("plugins")
-require("herdr_review").setup()
-require("formatting")
-require("lsp")
+_G.Vicmartos = require("vicmartos.utils")
+require("vicmartos.config.options")
+require("vicmartos.config.keymaps")
+require("vicmartos.config.autocmds")
+require("vicmartos.config.commands")
+require("vicmartos.config.workarounds")
+require("vicmartos.plugins")

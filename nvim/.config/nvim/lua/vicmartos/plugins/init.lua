@@ -1,0 +1,51 @@
+gh = function(x)
+	return "https://github.com/" .. x
+end
+
+vim.pack.add({
+	-- UI
+	{ src = gh("craftzdog/solarized-osaka.nvim") },
+	{ src = gh("nvim-mini/mini.icons") },
+	{ src = gh("folke/snacks.nvim") },
+	{ src = gh("folke/trouble.nvim") },
+	{ src = gh("nvim-lualine/lualine.nvim") },
+	{ src = gh("b0o/incline.nvim") },
+	{ src = gh("esmuellert/codediff.nvim") },
+	{ src = gh("rachartier/tiny-cmdline.nvim") },
+	-- Editor
+	{ src = gh("stevearc/conform.nvim") },
+	{ src = gh("nvim-treesitter/nvim-treesitter") },
+	{ src = gh("mks-h/treesitter-autoinstall.nvim") },
+	{ src = gh("nvim-mini/mini.pairs") },
+	{ src = gh("craftzdog/mini.diff"), version = "feat/grouping" },
+	{ src = gh("saghen/blink.cmp"), version = vim.version.range("^1") },
+	{ src = gh("folke/todo-comments.nvim") },
+	{ src = gh("lewis6991/gitsigns.nvim") },
+	{ src = gh("linrongbin16/gitlinker.nvim") },
+	{ src = gh("brenoprata10/nvim-highlight-colors") },
+	-- LSP
+	{ src = gh("neovim/nvim-lspconfig") },
+	{ src = gh("mason-org/mason.nvim") },
+	{ src = gh("WhoIsSethDaniel/mason-tool-installer.nvim") },
+	-- .NET
+	{ src = gh("vim-test/vim-test") },
+	{ src = gh("GustavEikaas/easy-dotnet.nvim") },
+	{ src = gh("nvim-lua/plenary.nvim") },
+	{ src = gh("mfussenegger/nvim-dap") },
+	{ src = gh("rcarriga/nvim-dap-ui") },
+	{ src = gh("nvim-neotest/nvim-nio") },
+	-- Util
+	{ src = gh("stevearc/oil.nvim") },
+})
+
+if #vim.api.nvim_get_runtime_file("lua/vicmartos/plugins/local.lua", false) > 0 then
+	require("vicmartos.plugins.local")
+end
+
+require("vicmartos.plugins.ui")
+require("vicmartos.plugins.treesitter")
+require("vicmartos.plugins.editor")
+require("vicmartos.plugins.lsp")
+require("vicmartos.plugins.util")
+require("vicmartos.plugins.dotnet")
+require("vicmartos.plugins.keymaps")
