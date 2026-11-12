@@ -3,6 +3,8 @@ PATH="$HOME/.dotnet:$PATH"
 PATH="$PATH:$HOME/.dotnet/tools"
 PATH="$PATH:$HOME/.opencode/bin"
 PATH="$PATH:$HOME/.local/bin"
+PATH="$PATH:$HOME/.dotnetup"
+PATH="$PATH:$HOME/.local/share/dotnetup/dotnet"
 
 export EDITOR='nvim'
 export VISUAL='nvim'
@@ -19,7 +21,7 @@ alias v=nvim
 emacsclient() {
   local arg
   if [[ ${TERM-} == xterm-256color && ${COLORTERM-} == truecolor ]] &&
-     infocmp xterm-direct &>/dev/null; then
+    infocmp xterm-direct &>/dev/null; then
     for arg in "$@"; do
       if [[ $arg == -t || $arg == --tty ]]; then
         TERM=xterm-direct command emacsclient "$@"
