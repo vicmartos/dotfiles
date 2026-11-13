@@ -28,7 +28,6 @@ vim.pack.add({
 	{ src = gh("mason-org/mason.nvim") },
 	{ src = gh("WhoIsSethDaniel/mason-tool-installer.nvim") },
 	-- .NET
-	{ src = gh("vim-test/vim-test") },
 	{ src = gh("GustavEikaas/easy-dotnet.nvim") },
 	{ src = gh("nvim-lua/plenary.nvim") },
 	{ src = gh("mfussenegger/nvim-dap") },

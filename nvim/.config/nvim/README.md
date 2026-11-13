@@ -28,10 +28,9 @@ Space dv CodeDiff, Space dh file history, Space gd diff overlay.
 Space yf copies relative file/line, Space yp absolute file/line.
 ZR restarts after saving with :wa.
 
-.NET: Space tr nearest test, tl last, ts suite, tt test UI.
-:EasyDotnet initializes optional test discovery; Space td debugs a test after
-initialization. F5 continues, F10 steps over, F11 steps in, F12 steps out.
-Space b breakpoint, B conditional breakpoint, dq terminate, dr REPL, du debug UI.
+.NET: :EasyDotnet initializes project tooling; use :Dotnet for commands.
+F5 continues, F10 steps over, F11 steps in, F12 steps out.
+Space db breakpoint, dB conditional breakpoint, dq terminate, dr REPL, du debug UI.
 
 ## Local adaptations
 
