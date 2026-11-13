@@ -223,7 +223,7 @@ map({
 				end
 
 				vim.cmd.tabnew()
-				require("gitsigns.actions.diffthis").show(bufnr, sha, info.filename)
+				require("gitsigns.actions.diffthis").show(sha, { bufnr = bufnr, path = info.filename })
 				async.schedule()
 				pcall(vim.api.nvim_win_set_cursor, 0, { info.orig_lnum or lnum, 0 })
 			end)
