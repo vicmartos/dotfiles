@@ -61,10 +61,6 @@ end, { desc = "Yank absolute path with line number" })
 
 keymap.set("v", "<leader>cc", ":<C-u>lua require('vicmartos.utils.editor').copy_as_codeblock()<CR>")
 
-keymap.set("n", "<leader>j", function()
-	require("vicmartos.utils.editor").open_package_json()
-end, { desc = "Open package.json in floating window" })
-
 keymap.set("n", "<leader>bd", function()
 	require("vicmartos.utils.editor").delete_hidden_buffers()
 end, { desc = "Delete hidden buffers" })
