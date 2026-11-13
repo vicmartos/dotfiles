@@ -1,12 +1,3 @@
--- Run the real `dotnet test` CLI in a reusable terminal split: full raw output,
--- searchable, and `gf`-friendly on stack-trace paths.
-vim.g["test#strategy"] = "neovim_sticky"
-vim.g["test#csharp#runner"] = "dotnettest"
-
-vim.keymap.set("n", "<leader>tr", "<cmd>TestNearest<cr>", { desc = "Tests: run nearest" })
-vim.keymap.set("n", "<leader>tl", "<cmd>TestLast<cr>", { desc = "Tests: run last" })
-vim.keymap.set("n", "<leader>ts", "<cmd>TestSuite<cr>", { desc = "Tests: run suite" })
-
 local dap = require("dap")
 local dapui = require("dapui")
 
@@ -14,7 +5,7 @@ dap.adapters.netcoredbg = function(callback)
 	local command = vim.fn.exepath("netcoredbg")
 	if command == "" then
 		vim.notify(
-			"netcoredbg is required to debug .NET tests; install it and ensure it is on PATH",
+			"netcoredbg is required to debug .NET applications; install it and ensure it is on PATH",
 			vim.log.levels.ERROR
 		)
 		return
@@ -48,7 +39,7 @@ local initialized = false
 
 vim.api.nvim_create_user_command("EasyDotnet", function()
 	if initialized then
-		vim.notify("easy-dotnet is already initialized; use :Dotnet testrunner", vim.log.levels.INFO)
+		vim.notify("easy-dotnet is already initialized; use :Dotnet", vim.log.levels.INFO)
 		return
 	end
 
@@ -61,14 +52,6 @@ vim.api.nvim_create_user_command("EasyDotnet", function()
 		debugger = { auto_register_dap = false },
 		test_runner = {
 			auto_start_testrunner = false,
-			mappings = {
-				debug_test_from_buffer = { lhs = "<leader>td", desc = "Tests: debug nearest" },
-				-- vim-test owns test execution; park easy-dotnet's buffer-local
-				-- run/peek mappings on untypable <Plug> keys.
-				run_test_from_buffer = { lhs = "<Plug>(easy-dotnet-run-test)" },
-				run_all_tests_from_buffer = { lhs = "<Plug>(easy-dotnet-run-all-tests)" },
-				peek_stack_trace_from_buffer = { lhs = "<Plug>(easy-dotnet-peek-stacktrace)" },
-			},
 		},
 		csproj_mappings = false,
 		fsproj_mappings = false,
@@ -77,14 +60,5 @@ vim.api.nvim_create_user_command("EasyDotnet", function()
 	})
 
 	initialized = true
-	vim.notify("easy-dotnet initialized; use :Dotnet testrunner", vim.log.levels.INFO)
+	vim.notify("easy-dotnet initialized; use :Dotnet", vim.log.levels.INFO)
 end, { desc = "Initialize easy-dotnet on demand" })
-
--- Lazy-initialize easy-dotnet (starts its server + discovery) only when the
--- testrunner or test debugging is actually needed.
-vim.keymap.set("n", "<leader>tt", function()
-	if not initialized then
-		vim.cmd("EasyDotnet")
-	end
-	require("easy-dotnet").testrunner()
-end, { desc = "Tests: toggle easy-dotnet testrunner" })
