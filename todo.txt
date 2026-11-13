@@ -1,7 +1,6 @@
 === TODO ===
 
 * I would like to invest time on a workflow that uses git worktrees at work
-* configure nvim-dap to debug go inside neovim (.net done via easy-dotnet.nvim)
 * check options for running .http files for testing: hurl and similar
 * check options to run sql scripts within neovim
 

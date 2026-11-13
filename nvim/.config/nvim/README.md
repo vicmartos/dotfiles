@@ -16,8 +16,8 @@ lazygit, delta, a Nerd Font, and a working clipboard provider (wl-clipboard
 on Wayland). Mason installs language servers and formatters without automatic
 updates. Run :Mason to inspect installation progress.
 
-.NET requires dotnet, roslyn-language-server, netcoredbg and the EasyDotnet
-global tool on PATH. Roslyn is the only C# server; easy-dotnet starts on demand.
+.NET language support requires dotnet and roslyn-language-server on PATH.
+Roslyn is the C# language server.
 
 ## Keys
 
@@ -29,15 +29,11 @@ Space yf copies relative file/line, Space yp absolute file/line.
 Space ? opens the [full keymap cheatsheet](KEYMAPS.md) in a floating window;
 q or Esc closes it. Scroll normally and use / to search.
 
-.NET: :EasyDotnet initializes project tooling; use :Dotnet for commands.
-F5 continues, F10 steps over, F11 steps in, F12 steps out.
-Space db breakpoint, dB conditional breakpoint, dq terminate, dr REPL, du debug UI.
-
 ## Local adaptations
 
 Namespace vicmartos/Vicmartos; Solarized Osaka vivid with transparency.
 No Copilot or Omarchy theme following. No nb, Herdr, session manager or Markdown
-preview integration. .NET retained with Snacks selection and C# parsing.
+preview integration. C# support uses Roslyn and Tree-sitter parsing.
 Lazygit commands use POSIX shell syntax. CSS server is provisioned; unprovisioned
 GLSL server disabled. Current upstream behavior takes precedence over the article.
 

@@ -63,7 +63,7 @@ Tab replaces the usual C-i jumplist shortcut when those keys are indistinguishab
 | Space o / Space O | N | Open line below / above, clear auto-inserted text, enter Insert mode |
 
 Some short leader mappings are also prefixes: Space c (ca, cc, cr, cR, cl)
-and Space d (debug and CodeDiff shortcuts). Neovim waits for a possible longer
+and Space d (CodeDiff shortcuts). Neovim waits for a possible longer
 mapping; pause for the short action or complete the longer sequence promptly.
 
 ## Language tools and diagnostics
@@ -107,23 +107,6 @@ on save; :ToggleFormatter toggles save formatting for the current buffer.
 | Space dh | N | CodeDiff history for current file |
 | Space dH | N | CodeDiff repository history |
 
-## Debugging (.NET adapter configured)
-
-| Keys | Mode | Action |
-| --- | --- | --- |
-| F5 | N | Start / continue debugging |
-| F10 | N | Step over |
-| F11 | N | Step into |
-| F12 | N | Step out |
-| Space db | N | Toggle breakpoint |
-| Space dB | N | Set conditional breakpoint (prompts for condition) |
-| Space dq | N | Terminate debug session |
-| Space dr | N | Toggle debug REPL |
-| Space du | N | Toggle debug UI |
-
-Debug UI also opens/closes with the session. netcoredbg must be on PATH.
-:EasyDotnet initializes optional project tooling; then use :Dotnet.
-
 ## Completion and contextual mappings
 
 | Keys / setting | Context | Action |
@@ -146,7 +129,6 @@ Review these files when updating this document:
 
 - lua/vicmartos/config/keymaps.lua: core editing and cheatsheet shortcut.
 - lua/vicmartos/plugins/keymaps.lua: navigation, LSP, Git and diff shortcuts.
-- lua/vicmartos/plugins/dotnet.lua: debugger mappings.
 - lua/vicmartos/plugins/editor.lua: completion presets and MiniDiff overrides.
 - lua/vicmartos/plugins/util.lua: Oil overrides.
 - lua/vicmartos/utils/editor.lua: contextual helper mappings.
