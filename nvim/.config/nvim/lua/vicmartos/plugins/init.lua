@@ -27,12 +27,8 @@ vim.pack.add({
 	{ src = gh("neovim/nvim-lspconfig") },
 	{ src = gh("mason-org/mason.nvim") },
 	{ src = gh("WhoIsSethDaniel/mason-tool-installer.nvim") },
-	-- .NET
-	{ src = gh("GustavEikaas/easy-dotnet.nvim") },
+	-- Shared dependency
 	{ src = gh("nvim-lua/plenary.nvim") },
-	{ src = gh("mfussenegger/nvim-dap") },
-	{ src = gh("rcarriga/nvim-dap-ui") },
-	{ src = gh("nvim-neotest/nvim-nio") },
 	-- Util
 	{ src = gh("stevearc/oil.nvim") },
 })
@@ -46,5 +42,4 @@ require("vicmartos.plugins.treesitter")
 require("vicmartos.plugins.editor")
 require("vicmartos.plugins.lsp")
 require("vicmartos.plugins.util")
-require("vicmartos.plugins.dotnet")
 require("vicmartos.plugins.keymaps")
