@@ -64,3 +64,7 @@ keymap.set("v", "<leader>cc", ":<C-u>lua require('vicmartos.utils.editor').copy_
 keymap.set("n", "<leader>bd", function()
 	require("vicmartos.utils.editor").delete_hidden_buffers()
 end, { desc = "Delete hidden buffers" })
+
+keymap.set("n", "<leader>?", function()
+	require("vicmartos.utils.cheatsheet").open()
+end, { desc = "Open keymap cheatsheet" })

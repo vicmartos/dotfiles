@@ -22,11 +22,12 @@ global tool on PATH. Roslyn is the only C# server; easy-dotnet starts on demand.
 ## Keys
 
 Space is leader. ;f files, ;r grep, ;; resume, sf Oil, ;g Lazygit.
-gd definition, gr references, K hover, Space ca code actions, Space cr rename.
+gd definition, grr references, K hover, Space ca code actions, Space cr rename.
 Space f formats; :ToggleFormatter toggles buffer save formatting.
 Space dv CodeDiff, Space dh file history, Space gd diff overlay.
 Space yf copies relative file/line, Space yp absolute file/line.
-ZR restarts after saving with :wa.
+Space ? opens the [full keymap cheatsheet](KEYMAPS.md) in a floating window;
+q or Esc closes it. Scroll normally and use / to search.
 
 .NET: :EasyDotnet initializes project tooling; use :Dotnet for commands.
 F5 continues, F10 steps over, F11 steps in, F12 steps out.
